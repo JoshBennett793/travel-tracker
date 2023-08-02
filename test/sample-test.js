@@ -1,5 +1,4 @@
-import chai from 'chai';
-const expect = chai.expect;
+import { expect } from 'chai';
 
 describe('See if the tests are running', function() {
   it('should return true', function() {
