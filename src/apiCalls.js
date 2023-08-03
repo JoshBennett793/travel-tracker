@@ -40,12 +40,21 @@ export function postFlightRequest(
   })
     .then(resp => {
       if (resp.ok) {
-        console.log('response is ok');
         return resp.json();
       }
 
-      if (resp.status >= 400) {
+      if (resp.status === 400) {
         throw new Error('There has been a user error');
+      } else if (resp.status === 422) {
+        throw new Error('The form is has been sent with missing information');
+      } else if (resp.status >= 500) {
+        throw new Error(
+          `There has been a network error: ${resp.status} ${resp.statusText}. Please refresh the page or try again later.`,
+        );
+      } else {
+        throw new Error(
+          `There has been an error: ${resp.status} ${resp.statusText}.`,
+        );
       }
     })
     .catch(err => console.error(err));
