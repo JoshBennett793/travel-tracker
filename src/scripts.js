@@ -43,13 +43,9 @@ export function initApp() {
     getAPIData(store.getAPIKey('trips')),
     getAPIData(store.getAPIKey('destinations')),
   ]).then(values => {
-    console.log(values);
     const [travelers, trips, destinations] = values;
-    store.setKey('travelers', travelers);
-    store.setKey('trips', trips);
-    store.setKey('destinations', destinations);
-    console.log('travelers', travelers);
-    console.log('trips', trips);
-    console.log('destinations', destinations);
+    store.setKey('travelers', travelers.travelers);
+    store.setKey('trips', trips.trips);
+    store.setKey('destinations', destinations.destinations);
   });
 }
