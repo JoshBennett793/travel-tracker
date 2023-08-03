@@ -461,18 +461,25 @@ function getAPIData(url) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "filterTrips": () => (/* binding */ filterTrips),
-/* harmony export */   "getRandomTraveler": () => (/* binding */ getRandomTraveler)
+/* harmony export */   "getRandomTraveler": () => (/* binding */ getRandomTraveler),
+/* harmony export */   "calcTotalSpentByYear": () => (/* binding */ calcTotalSpentByYear)
 /* harmony export */ });
 /* -------------- Util -------------- */
 
-function filterTrips(tripData, criteria) {
+function filterTrips(tripData, criteria, travelerID, year) {
   const date = new Date();
-  const year = date.toLocaleString('default', { year: 'numeric' });
-  const month = date.toLocaleString('default', { month: '2-digit' });
-  const day = date.toLocaleString('default', { day: '2-digit' });
-  const currentDate = `${year}/${month}/${day}`;
+  const yyyy = date.toLocaleString('default', { year: 'numeric' });
+  const mm = date.toLocaleString('default', { month: '2-digit' });
+  const dd = date.toLocaleString('default', { day: '2-digit' });
+  const currentDate = `${yyyy}/${mm}/${dd}`;
 
   switch (criteria) {
+    case 'all':
+      return tripData.filter(trip => trip.userID === travelerID);
+    case 'byYear':
+      return tripData.filter(
+        trip => trip.userID === travelerID && trip.date.slice(0, 4) === year,
+      );
     case 'past':
       return tripData.filter(trip => trip.date < currentDate);
     case 'upcoming':
@@ -487,7 +494,28 @@ function filterTrips(tripData, criteria) {
 /* -------------- Travelers -------------- */
 
 function getRandomTraveler(travelers) {
-  return travelers[Math.floor(Math.random() * travelers.length) + 1];
+  return travelers[Math.floor(Math.random() * travelers.length)];
+}
+
+/* -------------- Calculation -------------- */
+
+function calcTotalSpentByYear(userID, trips, destinations, year) {
+  return filterTrips(trips, 'byYear', userID, year).reduce((acc, trip) => {
+    const destination = destinations.filter(
+      dest => dest.id === trip.destinationID,
+    )[0];
+    const flightCost =
+      trip.travelers * (destination.estimatedFlightCostPerPerson * 2);
+
+    const lodgingCost =
+      trip.duration * destination.estimatedLodgingCostPerDay * trip.travelers;
+    const subTotal = flightCost + lodgingCost;
+    const agentFee = subTotal * 0.1;
+
+    acc += subTotal + agentFee;
+    
+    return acc;
+  }, 0);
 }
 
 
