@@ -1,6 +1,7 @@
 import './css/styles.css';
 
 import { getAPIData } from './apiCalls';
+import { getRandomTraveler } from './model';
 
 function initStore() {
   const store = {
@@ -42,10 +43,15 @@ export function initApp() {
     getAPIData(store.getAPIKey('travelers')),
     getAPIData(store.getAPIKey('trips')),
     getAPIData(store.getAPIKey('destinations')),
-  ]).then(values => {
-    const [travelers, trips, destinations] = values;
-    store.setKey('travelers', travelers.travelers);
-    store.setKey('trips', trips.trips);
-    store.setKey('destinations', destinations.destinations);
-  });
+  ])
+    .then(values => {
+      const [travelers, trips, destinations] = values;
+      store.setKey('travelers', travelers.travelers);
+      store.setKey('trips', trips.trips);
+      store.setKey('destinations', destinations.destinations);
+      store.setKey('currentUser', getRandomTraveler(store.getKey('travelers')));
+    })
+    .then(() => {
+      
+    });
 }

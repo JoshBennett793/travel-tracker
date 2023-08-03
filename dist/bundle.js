@@ -454,6 +454,71 @@ function getAPIData(url) {
 }
 
 
+/***/ }),
+/* 7 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "filterTrips": () => (/* binding */ filterTrips),
+/* harmony export */   "getRandomTraveler": () => (/* binding */ getRandomTraveler),
+/* harmony export */   "calcTotalSpentByYear": () => (/* binding */ calcTotalSpentByYear)
+/* harmony export */ });
+/* -------------- Util -------------- */
+
+function filterTrips(tripData, criteria, travelerID, year) {
+  const date = new Date();
+  const yyyy = date.toLocaleString('default', { year: 'numeric' });
+  const mm = date.toLocaleString('default', { month: '2-digit' });
+  const dd = date.toLocaleString('default', { day: '2-digit' });
+  const currentDate = `${yyyy}/${mm}/${dd}`;
+
+  switch (criteria) {
+    case 'all':
+      return tripData.filter(trip => trip.userID === travelerID);
+    case 'byYear':
+      return tripData.filter(
+        trip => trip.userID === travelerID && trip.date.slice(0, 4) === year,
+      );
+    case 'past':
+      return tripData.filter(trip => trip.date < currentDate);
+    case 'upcoming':
+      return tripData.filter(
+        trip => trip.date > currentDate && trip.status === 'approved',
+      );
+    case 'pending':
+      return tripData.filter(trip => trip.status === 'pending');
+  }
+}
+
+/* -------------- Travelers -------------- */
+
+function getRandomTraveler(travelers) {
+  return travelers[Math.floor(Math.random() * travelers.length)];
+}
+
+/* -------------- Calculation -------------- */
+
+function calcTotalSpentByYear(userID, trips, destinations, year) {
+  return filterTrips(trips, 'byYear', userID, year).reduce((acc, trip) => {
+    const destination = destinations.filter(
+      dest => dest.id === trip.destinationID,
+    )[0];
+    const flightCost =
+      trip.travelers * (destination.estimatedFlightCostPerPerson * 2);
+
+    const lodgingCost =
+      trip.duration * destination.estimatedLodgingCostPerDay * trip.travelers;
+    const subTotal = flightCost + lodgingCost;
+    const agentFee = subTotal * 0.1;
+
+    acc += subTotal + agentFee;
+    
+    return acc;
+  }, 0);
+}
+
+
 /***/ })
 /******/ 	]);
 /************************************************************************/
@@ -533,6 +598,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _css_styles_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7);
+
 
 
 
@@ -577,12 +644,17 @@ function initApp() {
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('travelers')),
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('trips')),
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('destinations')),
-  ]).then(values => {
-    const [travelers, trips, destinations] = values;
-    store.setKey('travelers', travelers.travelers);
-    store.setKey('trips', trips.trips);
-    store.setKey('destinations', destinations.destinations);
-  });
+  ])
+    .then(values => {
+      const [travelers, trips, destinations] = values;
+      store.setKey('travelers', travelers.travelers);
+      store.setKey('trips', trips.trips);
+      store.setKey('destinations', destinations.destinations);
+      store.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_2__.getRandomTraveler)(store.getKey('travelers')));
+    })
+    .then(() => {
+      
+    });
 }
 
 })();
