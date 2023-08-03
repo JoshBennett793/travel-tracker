@@ -11,6 +11,6 @@ export function filterTrips(tripData, criteria) {
     case 'upcoming':
       return tripData.filter(trip => trip.date > currentDate && trip.status === 'approved');
     case 'pending':
-      return tripData.filter(trip => trip.date < currentDate);
+      return tripData.filter(trip => trip.status === 'pending');
   }
 }

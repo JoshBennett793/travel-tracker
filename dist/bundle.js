@@ -578,14 +578,10 @@ function initApp() {
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('trips')),
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('destinations')),
   ]).then(values => {
-    console.log(values);
     const [travelers, trips, destinations] = values;
     store.setKey('travelers', travelers);
     store.setKey('trips', trips);
     store.setKey('destinations', destinations);
-    console.log('travelers', travelers);
-    console.log('trips', trips);
-    console.log('destinations', destinations);
   });
 }
 
