@@ -52,6 +52,6 @@ export function initApp() {
       store.setKey('currentUser', getRandomTraveler(store.getKey('travelers')));
     })
     .then(() => {
-      console.log(store.getKey('currentUser'));
+      
     });
 }

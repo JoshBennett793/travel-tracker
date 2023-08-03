@@ -653,7 +653,7 @@ function initApp() {
       store.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_2__.getRandomTraveler)(store.getKey('travelers')));
     })
     .then(() => {
-      console.log(store.getKey('currentUser'));
+      
     });
 }
 
