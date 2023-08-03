@@ -12,3 +12,41 @@ export function getAPIData(url) {
     .then(data => data)
     .catch(err => console.log(err));
 }
+
+export function postFlightRequest(
+  url,
+  previousTripID,
+  userID,
+  destinationID,
+  travelers,
+  date,
+  duration,
+) {
+  return fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({
+      id: previousTripID + 1,
+      userID,
+      destinationID,
+      travelers,
+      date,
+      duration,
+      status: 'pending',
+      suggestedActivities: [],
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(resp => {
+      if (resp.ok) {
+        console.log('response is ok');
+        return resp.json();
+      }
+
+      if (resp.status >= 400) {
+        throw new Error('There has been a user error');
+      }
+    })
+    .catch(err => console.error(err));
+}

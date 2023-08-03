@@ -436,7 +436,8 @@ module.exports = function (cssWithMappingToString) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getAPIData": () => (/* binding */ getAPIData)
+/* harmony export */   "getAPIData": () => (/* binding */ getAPIData),
+/* harmony export */   "postFlightRequest": () => (/* binding */ postFlightRequest)
 /* harmony export */ });
 function getAPIData(url) {
   return fetch(url)
@@ -451,6 +452,44 @@ function getAPIData(url) {
     })
     .then(data => data)
     .catch(err => console.log(err));
+}
+
+function postFlightRequest(
+  url,
+  previousTripID,
+  userID,
+  destinationID,
+  travelers,
+  date,
+  duration,
+) {
+  return fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({
+      id: previousTripID + 1,
+      userID,
+      destinationID,
+      travelers,
+      date,
+      duration,
+      status: 'pending',
+      suggestedActivities: [],
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(resp => {
+      if (resp.ok) {
+        console.log('response is ok');
+        return resp.json();
+      }
+
+      if (resp.status >= 400) {
+        throw new Error('There has been a user error');
+      }
+    })
+    .catch(err => console.error(err));
 }
 
 
