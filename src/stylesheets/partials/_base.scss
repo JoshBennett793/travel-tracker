@@ -1,0 +1,14 @@
+@import '../../../node_modules/normalize.css/normalize';
+
+@import '../modules/all';
+@import '../modules/typography';
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  @include vertical-centered-flex-container;
+  height: 100vh;
+  width: 100vw;
+}

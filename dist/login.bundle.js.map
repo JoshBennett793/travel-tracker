@@ -1,0 +1,1 @@
+{"version":3,"file":"login.bundle.js","mappings":";;AAAA;;AAEA;AACA;AACA","sources":["webpack://webpack-starter-kit/./src/login/login.js"],"sourcesContent":["const loginBtn = document.querySelector('.login-btn');\n\nloginBtn.onclick = () => {\n  window.location.href = 'home.html';\n}\n"],"names":[],"sourceRoot":""}

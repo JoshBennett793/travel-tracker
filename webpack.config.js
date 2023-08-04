@@ -1,39 +1,54 @@
 const path = require('path');
 
 module.exports = {
-  "mode": "none",
-  "entry": "./src/scripts.js",
-  "output": {
-    "path": __dirname + '/dist',
-    "filename": "bundle.js",
-    sourceMapFilename: "bundle.js.map"
+  mode: 'none',
+  entry: {
+    login: './src/login/login.js',
+    home: './src/scripts.js',
+  },
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist')
+    contentBase: path.join(__dirname, 'dist'),
   },
-  "devtool": "source-map",
-  "module": {
-    "rules": [
+  devtool: 'source-map',
+  module: {
+    rules: [
       {
-        test: /\.css$/,
+        test: /\.scss$/i,
         use: [
-            { loader: 'style-loader' },
-            { loader: 'css-loader' }
-        ]
-    },
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'resolve-url-loader',
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
+      },
       {
-        test: /\.(png|svg|jpg|gif)$/,
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
         use: [
           {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
               outputPath: 'images/',
-              publicPath: 'images/'
-            }
-          }
-        ]
-      }
-    ]
-  }
+              publicPath: 'images/',
+            },
+          },
+        ],
+      },
+    ],
+  },
 };
