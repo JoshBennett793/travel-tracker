@@ -1,0 +1,48 @@
+header {
+  @include centered-flex-container;
+  height: 125px;
+  width: 100%;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.35) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+
+  .logo-container {
+    background: url('./logo.png') center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    
+    position: absolute;
+    left: 10vw;
+    height: 150px;
+    width: 150px;
+  }
+}
+
+.header-nav-container {
+  width: 100%;
+
+  nav ul {
+    @include centered-flex-container;
+    gap: 40px;
+
+    list-style: none;
+    height: 100px;
+    width: 100%;
+
+    margin-block: {
+      start: 0;
+      end: 0;
+    }
+    padding-inline-start: 0;
+  }
+}
