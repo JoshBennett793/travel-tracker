@@ -1,0 +1,1 @@
+import '../stylesheets/partials/trips/_trips-base.scss'

@@ -3,6 +3,22 @@ import './stylesheets/index.scss';
 import { getAPIData } from './apiCalls';
 import { getRandomTraveler } from './model';
 
+// Query Selectors
+
+// Nav
+const navBtns = document.querySelectorAll('.site-nav-list-item');
+
+
+// Event Listeners
+
+navBtns.forEach(btn => {
+  btn.onclick = (e) => {
+    window.location.href = `${e.target.id}.html`
+  }
+})
+
+// Functions
+
 function initStore() {
   const store = {
     apiKey: {
