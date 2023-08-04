@@ -4,7 +4,7 @@ module.exports = {
   mode: 'none',
   entry: {
     login: './src/login/login.js',
-    home: './src/scripts.js'
+    home: './src/scripts.js',
   },
   output: {
     filename: '[name].bundle.js',
@@ -18,7 +18,23 @@ module.exports = {
     rules: [
       {
         test: /\.scss$/i,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'resolve-url-loader',
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
