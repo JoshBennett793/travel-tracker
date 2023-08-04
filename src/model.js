@@ -1,11 +1,13 @@
 /* -------------- Util -------------- */
 
-export function filterTrips(tripData, criteria, travelerID, year) {
+export function filterTrips(tripData, criteria, travelerID, year = '2023') {
   const date = new Date();
   const yyyy = date.toLocaleString('default', { year: 'numeric' });
   const mm = date.toLocaleString('default', { month: '2-digit' });
   const dd = date.toLocaleString('default', { day: '2-digit' });
   const currentDate = `${yyyy}/${mm}/${dd}`;
+
+  tripData = tripData.filter(trip => trip.userID === travelerID);
 
   switch (criteria) {
     case 'all':
@@ -22,6 +24,8 @@ export function filterTrips(tripData, criteria, travelerID, year) {
       );
     case 'pending':
       return tripData.filter(trip => trip.status === 'pending');
+    default:
+      return tripData;
   }
 }
 
@@ -47,7 +51,7 @@ export function calcTotalSpentByYear(userID, trips, destinations, year) {
     const agentFee = subTotal * 0.1;
 
     acc += subTotal + agentFee;
-    
+
     return acc;
   }, 0);
 }

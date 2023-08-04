@@ -582,12 +582,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* -------------- Util -------------- */
 
-function filterTrips(tripData, criteria, travelerID, year) {
+function filterTrips(tripData, criteria, travelerID, year = '2023') {
   const date = new Date();
   const yyyy = date.toLocaleString('default', { year: 'numeric' });
   const mm = date.toLocaleString('default', { month: '2-digit' });
   const dd = date.toLocaleString('default', { day: '2-digit' });
   const currentDate = `${yyyy}/${mm}/${dd}`;
+
+  tripData = tripData.filter(trip => trip.userID === travelerID);
 
   switch (criteria) {
     case 'all':
@@ -604,6 +606,8 @@ function filterTrips(tripData, criteria, travelerID, year) {
       );
     case 'pending':
       return tripData.filter(trip => trip.status === 'pending');
+    default:
+      return tripData;
   }
 }
 
@@ -629,7 +633,7 @@ function calcTotalSpentByYear(userID, trips, destinations, year) {
     const agentFee = subTotal * 0.1;
 
     acc += subTotal + agentFee;
-    
+
     return acc;
   }, 0);
 }
@@ -771,7 +775,7 @@ function initStore() {
 
 let store;
 
-window.onload = () => {
+document.currentScript.onload = () => {
   store = initStore();
   initApp();
 };
@@ -789,9 +793,6 @@ function initApp() {
       store.setKey('destinations', destinations.destinations);
       store.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_2__.getRandomTraveler)(store.getKey('travelers')));
     })
-    .then(() => {
-      
-    });
 }
 
 })();

@@ -49,7 +49,7 @@ function initStore() {
 
 export let store;
 
-window.onload = () => {
+document.currentScript.onload = () => {
   store = initStore();
   initApp();
 };
@@ -67,7 +67,4 @@ export function initApp() {
       store.setKey('destinations', destinations.destinations);
       store.setKey('currentUser', getRandomTraveler(store.getKey('travelers')));
     })
-    .then(() => {
-      
-    });
 }

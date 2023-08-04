@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Trips | VantageJet</title>
   </head>
-
+  
   <body>
     <div class="trips-page-bg-img-container"></div>
     <header>
@@ -26,9 +26,9 @@
     <main class="trips-main">
       <section class="upper-main">
         <div class="filter-btn-container">
-          <button class="filter-btn">Past</button>
-          <button class="filter-btn">Upcoming</button>
-          <button class="filter-btn">Pending</button>
+          <button class="filter-btn" id="past">Past</button>
+          <button class="filter-btn" id="upcoming">Upcoming</button>
+          <button class="filter-btn" id="pending">Pending</button>
         </div>
         <p class="total-spent">
           Total Spent: $<span class="total-spent-value">6,500</span>
@@ -36,7 +36,8 @@
       </section>
       <section class="lower-main results-container"></section>
     </main>
-    <script src="index.bundle.js"></script>
-    <script src="trips.bundle.js"></script>
   </body>
+  
+  <script src="index.bundle.js"></script>
+  <script src="trips.bundle.js"></script>
 </html>
