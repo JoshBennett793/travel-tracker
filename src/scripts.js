@@ -1,4 +1,4 @@
-import './css/styles.css';
+import './stylesheets/index.scss';
 
 import { getAPIData } from './apiCalls';
 import { getRandomTraveler } from './model';
