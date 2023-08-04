@@ -1,0 +1,15 @@
+@import './colors';
+
+// Base Font
+$base-font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+// Font Sizes
+$base-font-size: 1.2rem;
+
+* {
+  color: $primary-font-color;
+  font: {
+    family: $base-font-family;
+    size: $base-font-size;
+  }
+}
