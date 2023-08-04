@@ -436,7 +436,8 @@ module.exports = function (cssWithMappingToString) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getAPIData": () => (/* binding */ getAPIData)
+/* harmony export */   "getAPIData": () => (/* binding */ getAPIData),
+/* harmony export */   "postFlightRequest": () => (/* binding */ postFlightRequest)
 /* harmony export */ });
 function getAPIData(url) {
   return fetch(url)
@@ -451,6 +452,53 @@ function getAPIData(url) {
     })
     .then(data => data)
     .catch(err => console.log(err));
+}
+
+function postFlightRequest(
+  url,
+  previousTripID,
+  userID,
+  destinationID,
+  travelers,
+  date,
+  duration,
+) {
+  return fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({
+      id: previousTripID + 1,
+      userID,
+      destinationID,
+      travelers,
+      date,
+      duration,
+      status: 'pending',
+      suggestedActivities: [],
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(resp => {
+      if (resp.ok) {
+        return resp.json();
+      }
+
+      if (resp.status === 400) {
+        throw new Error('There has been a user error');
+      } else if (resp.status === 422) {
+        throw new Error('The form is has been sent with missing information');
+      } else if (resp.status >= 500) {
+        throw new Error(
+          `There has been a network error: ${resp.status} ${resp.statusText}. Please refresh the page or try again later.`,
+        );
+      } else {
+        throw new Error(
+          `There has been an error: ${resp.status} ${resp.statusText}.`,
+        );
+      }
+    })
+    .catch(err => console.error(err));
 }
 
 
