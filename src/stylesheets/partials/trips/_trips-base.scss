@@ -1,11 +1,23 @@
 @import '../base';
+@import './trips-card';
 
-html {
+body {
   background: $primary-brand-color;
+
+  /* Hide Scroll Bar Across Browsers */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  /* Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .trips-page-bg-img-container {
-  flex: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 60%;
   width: 100%;
 
   background: url('./trips-bg.jpg') no-repeat center;
@@ -18,20 +30,19 @@ html {
 }
 
 .trips-main {
-  @include vertical-centered-flex-container;
-
-  position: relative;
-  bottom: 5vh;
-
   background-color: $primary-brand-color;
 
-  flex: 1;
+  position: relative;
+  top: 40%;
+
   width: 100%;
 
   border-top: {
     left-radius: 25px;
     right-radius: 25px;
   }
+
+  overflow: hidden;
 }
 
 .upper-main {
@@ -53,19 +64,17 @@ html {
     button:hover {
       border: none {
         bottom: 2px solid $primary-font-color;
-        radius: 15px;
+        radius: 8px;
       }
     }
   }
 }
 
 .lower-main {
-  position: relative;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
+  @include vertical-centered-flex-container;
 
-  overflow: auto;
+  width: 100%;
+  padding: 2rem;
 }
 
 .selected {

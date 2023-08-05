@@ -1,3 +1,5 @@
+import { store } from './scripts';
+
 /* -------------- Util -------------- */
 
 export function filterTrips(tripData, criteria, travelerID, year = '2023') {
@@ -39,19 +41,39 @@ export function getRandomTraveler(travelers) {
 
 export function calcTotalSpentByYear(userID, trips, destinations, year) {
   return filterTrips(trips, 'byYear', userID, year).reduce((acc, trip) => {
-    const destination = destinations.filter(
-      dest => dest.id === trip.destinationID,
-    )[0];
-    const flightCost =
-      trip.travelers * (destination.estimatedFlightCostPerPerson * 2);
+    const total = calcTotalCostOfTrip(trip);
 
-    const lodgingCost =
-      trip.duration * destination.estimatedLodgingCostPerDay * trip.travelers;
-    const subTotal = flightCost + lodgingCost;
-    const agentFee = subTotal * 0.1;
-
-    acc += subTotal + agentFee;
+    acc += total;
 
     return acc;
   }, 0);
+}
+
+export function calcTotalCostOfTrip(trip) {
+  const destination = findDestinationByID(trip.destinationID);
+  const flightCost =
+    trip.travelers * (destination.estimatedFlightCostPerPerson * 2);
+
+  const lodgingCost =
+    trip.duration * destination.estimatedLodgingCostPerDay * trip.travelers;
+  const subTotal = flightCost + lodgingCost;
+  const agentFee = subTotal * 0.1;
+
+  return subTotal + agentFee;
+}
+
+/* -------------- Trips -------------- */
+
+export function aggregateTripData(filterCriteria) {
+  const trips = store.getKey('trips');
+  const userID = store.getKey('currentUser').id;
+  const filteredTrips = filterTrips(trips, filterCriteria, userID);
+  return {
+    userID,
+    filteredTrips,
+  };
+}
+
+export function findDestinationByID(destID) {
+  return store.getKey('destinations').find(dest => dest.id === destID);
 }
