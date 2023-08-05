@@ -730,8 +730,8 @@ var __webpack_exports__ = {};
 (() => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   initApp: () => (/* binding */ initApp),
-/* harmony export */   store: () => (/* binding */ store)
+/* harmony export */   setAndProcessUserData: () => (/* binding */ setAndProcessUserData),
+/* harmony export */   userStore: () => (/* binding */ userStore)
 /* harmony export */ });
 /* harmony import */ var _stylesheets_index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
@@ -746,35 +746,20 @@ __webpack_require__.r(__webpack_exports__);
 // Nav
 const navBtns = document.querySelectorAll('.site-nav-list-item');
 
-
 // Event Listeners
 
 navBtns.forEach(btn => {
-  btn.onclick = (e) => {
-    window.location.href = `${e.target.id}.html`
-  }
-})
+  btn.onclick = e => {
+    window.location.href = `${e.target.id}.html`;
+  };
+});
 
 // Functions
 
-function initStore() {
-  const store = {
-    apiKey: {
-      base: 'http://localhost:3001/api/v1/',
-      endpoints: {
-        travelers: 'travelers',
-        trips: 'trips',
-        destinations: 'destinations',
-      },
-    },
-  };
+function initUserStore() {
+  const store = {};
 
   return {
-    getAPIKey(endpoint) {
-      const ref = store.apiKey;
-      return `${ref.base}${ref.endpoints[endpoint]}`;
-    },
-
     getKey(key) {
       return store[key];
     },
@@ -785,22 +770,13 @@ function initStore() {
   };
 }
 
-const store = initStore();
-initApp();
+const userStore = initUserStore();
+setAndProcessUserData();
 
-function initApp() {
-  Promise.all([
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('travelers')),
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('trips')),
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('destinations')),
-  ])
-    .then(values => {
-      const [travelers, trips, destinations] = values;
-      store.setKey('travelers', travelers.travelers);
-      store.setKey('trips', trips.trips);
-      store.setKey('destinations', destinations.destinations);
-      store.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_2__.getRandomTraveler)(store.getKey('travelers')));
-    })
+function setAndProcessUserData() {
+  (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)('http://localhost:3001/api/v1/travelers').then(data => {
+    userStore.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_2__.getRandomTraveler)(data.travelers));
+  });
 }
 
 })();

@@ -6,8 +6,8 @@
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   initApp: () => (/* binding */ initApp),
-/* harmony export */   store: () => (/* binding */ store)
+/* harmony export */   setAndProcessUserData: () => (/* binding */ setAndProcessUserData),
+/* harmony export */   userStore: () => (/* binding */ userStore)
 /* harmony export */ });
 /* harmony import */ var _stylesheets_index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
@@ -22,35 +22,20 @@ __webpack_require__.r(__webpack_exports__);
 // Nav
 const navBtns = document.querySelectorAll('.site-nav-list-item');
 
-
 // Event Listeners
 
 navBtns.forEach(btn => {
-  btn.onclick = (e) => {
-    window.location.href = `${e.target.id}.html`
-  }
-})
+  btn.onclick = e => {
+    window.location.href = `${e.target.id}.html`;
+  };
+});
 
 // Functions
 
-function initStore() {
-  const store = {
-    apiKey: {
-      base: 'http://localhost:3001/api/v1/',
-      endpoints: {
-        travelers: 'travelers',
-        trips: 'trips',
-        destinations: 'destinations',
-      },
-    },
-  };
+function initUserStore() {
+  const store = {};
 
   return {
-    getAPIKey(endpoint) {
-      const ref = store.apiKey;
-      return `${ref.base}${ref.endpoints[endpoint]}`;
-    },
-
     getKey(key) {
       return store[key];
     },
@@ -61,22 +46,13 @@ function initStore() {
   };
 }
 
-const store = initStore();
-initApp();
+const userStore = initUserStore();
+setAndProcessUserData();
 
-function initApp() {
-  Promise.all([
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('travelers')),
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('trips')),
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('destinations')),
-  ])
-    .then(values => {
-      const [travelers, trips, destinations] = values;
-      store.setKey('travelers', travelers.travelers);
-      store.setKey('trips', trips.trips);
-      store.setKey('destinations', destinations.destinations);
-      store.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_2__.getRandomTraveler)(store.getKey('travelers')));
-    })
+function setAndProcessUserData() {
+  (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)('http://localhost:3001/api/v1/travelers').then(data => {
+    userStore.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_2__.getRandomTraveler)(data.travelers));
+  });
 }
 
 
@@ -953,10 +929,16 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   dataStore: () => (/* binding */ dataStore),
+/* harmony export */   setAndProcessData: () => (/* binding */ setAndProcessData)
+/* harmony export */ });
 /* harmony import */ var _stylesheets_partials_trips_trips_base_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(14);
 /* harmony import */ var _scripts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
 /* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
-/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17);
+/* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9);
+/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(17);
+
 
 
 
@@ -969,32 +951,71 @@ __webpack_require__.r(__webpack_exports__);
 
 const filterBtns = document.querySelectorAll('.filter-btn');
 
+function initDataStore() {
+  const store = {
+    apiKey: {
+      base: 'http://localhost:3001/api/v1/',
+      endpoints: {
+        trips: 'trips',
+        destinations: 'destinations',
+      },
+    },
+  };
+
+  return {
+    getAPIKey(endpoint) {
+      const ref = store.apiKey;
+      return `${ref.base}${ref.endpoints[endpoint]}`;
+    },
+
+    getKey(key) {
+      return store[key];
+    },
+
+    setKey(key, value) {
+      store[key] = value;
+    },
+  };
+}
+
+const dataStore = initDataStore();
+setAndProcessData();
+
+function setAndProcessData() {
+  Promise.all([
+    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_3__.getAPIData)(dataStore.getAPIKey('trips')),
+    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_3__.getAPIData)(dataStore.getAPIKey('destinations')),
+  ]).then(values => {
+    const [trips, destinations] = values;
+    dataStore.setKey('trips', trips.trips);
+    dataStore.setKey('destinations', destinations.destinations);
+  });
+}
 
 // Event Listeners
 window.addEventListener('load', () => {
   let tripData = aggregateTripData('past');
-  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayFilteredTrips)({
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_4__.displayFilteredTrips)({
     trips: tripData.filteredTrips,
-    destinations: _scripts__WEBPACK_IMPORTED_MODULE_1__.store.getKey('destinations'),
+    destinations: dataStore.getKey('destinations'),
   });
-  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displaySelectedFilterOption)('past');
-  
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_4__.displaySelectedFilterOption)('past');
+
   filterBtns.forEach(btn => {
     btn.onclick = e => {
       tripData = aggregateTripData(`${e.target.id}`);
-      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayFilteredTrips)({
+      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_4__.displayFilteredTrips)({
         trips: tripData.filteredTrips,
-        destinations: _scripts__WEBPACK_IMPORTED_MODULE_1__.store.getKey('destinations'),
+        destinations: dataStore.getKey('destinations'),
       });
-      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displaySelectedFilterOption)(`${e.target.id}`);
+      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_4__.displaySelectedFilterOption)(`${e.target.id}`);
     };
   });
 });
 
-
 function aggregateTripData(filterCriteria) {
-  const trips = _scripts__WEBPACK_IMPORTED_MODULE_1__.store.getKey('trips');
-  const userID = _scripts__WEBPACK_IMPORTED_MODULE_1__.store.getKey('currentUser').id;
+  const trips = dataStore.getKey('trips');
+  const userID = _scripts__WEBPACK_IMPORTED_MODULE_1__.userStore.getKey('currentUser').id;
   const filteredTrips = (0,_model__WEBPACK_IMPORTED_MODULE_2__.filterTrips)(trips, filterCriteria, userID);
   return {
     userID,

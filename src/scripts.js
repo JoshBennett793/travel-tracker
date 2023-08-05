@@ -8,35 +8,20 @@ import { getRandomTraveler } from './model';
 // Nav
 const navBtns = document.querySelectorAll('.site-nav-list-item');
 
-
 // Event Listeners
 
 navBtns.forEach(btn => {
-  btn.onclick = (e) => {
-    window.location.href = `${e.target.id}.html`
-  }
-})
+  btn.onclick = e => {
+    window.location.href = `${e.target.id}.html`;
+  };
+});
 
 // Functions
 
-function initStore() {
-  const store = {
-    apiKey: {
-      base: 'http://localhost:3001/api/v1/',
-      endpoints: {
-        travelers: 'travelers',
-        trips: 'trips',
-        destinations: 'destinations',
-      },
-    },
-  };
+function initUserStore() {
+  const store = {};
 
   return {
-    getAPIKey(endpoint) {
-      const ref = store.apiKey;
-      return `${ref.base}${ref.endpoints[endpoint]}`;
-    },
-
     getKey(key) {
       return store[key];
     },
@@ -47,20 +32,11 @@ function initStore() {
   };
 }
 
-export const store = initStore();
-initApp();
+export const userStore = initUserStore();
+setAndProcessUserData();
 
-export function initApp() {
-  Promise.all([
-    getAPIData(store.getAPIKey('travelers')),
-    getAPIData(store.getAPIKey('trips')),
-    getAPIData(store.getAPIKey('destinations')),
-  ])
-    .then(values => {
-      const [travelers, trips, destinations] = values;
-      store.setKey('travelers', travelers.travelers);
-      store.setKey('trips', trips.trips);
-      store.setKey('destinations', destinations.destinations);
-      store.setKey('currentUser', getRandomTraveler(store.getKey('travelers')));
-    })
+export function setAndProcessUserData() {
+  getAPIData('http://localhost:3001/api/v1/travelers').then(data => {
+    userStore.setKey('currentUser', getRandomTraveler(data.travelers));
+  });
 }
