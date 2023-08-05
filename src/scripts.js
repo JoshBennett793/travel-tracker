@@ -47,12 +47,8 @@ function initStore() {
   };
 }
 
-export let store;
-
-document.currentScript.onload = () => {
-  store = initStore();
-  initApp();
-};
+export const store = initStore();
+initApp();
 
 export function initApp() {
   Promise.all([
