@@ -11,6 +11,18 @@ export function TripCard(trip, destination) {
   destinationImg.src = destination.image;
   destinationImg.alt = destination.alt;
   imgContainer.appendChild(destinationImg);
+
+  const dataContainer = document.createElement('div');
+  dataContainer.classList.add('card-data-container');
+  card.appendChild(dataContainer);
+  
+  const destinationTitle = document.createElement('h2');
+  destinationTitle.innerText = destination.destination;
+  dataContainer.appendChild(destinationTitle);
+
+  const lastVisitDate = document.createElement('p');
+  lastVisitDate.innerText = `Last visited: ${trip.date}`;
+  dataContainer.append(lastVisitDate);
   
   return card;
 }

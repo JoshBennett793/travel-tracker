@@ -19,7 +19,7 @@ export function filterTrips(tripData, criteria, travelerID, year = '2023') {
         trip => trip.userID === travelerID && trip.date.slice(0, 4) === year,
       );
     case 'past':
-      return tripData.filter(trip => trip.date < currentDate);
+      return tripData.filter(trip => trip.date < currentDate && trip.status !== 'pending');
     case 'upcoming':
       return tripData.filter(
         trip => trip.date > currentDate && trip.status === 'approved',
