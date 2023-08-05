@@ -2,7 +2,7 @@
 @import './trips-card';
 
 body {
-  background: $primary-brand-color;
+  background: $brand-color-2;
 
   /* Hide Scroll Bar Across Browsers */
   -ms-overflow-style: none; /* IE and Edge */
@@ -30,7 +30,7 @@ body {
 }
 
 .trips-main {
-  background-color: $primary-brand-color;
+  background-color: $brand-color-5;
 
   position: relative;
   top: 40%;
@@ -63,7 +63,7 @@ body {
     button.selected,
     button:hover {
       border: none {
-        bottom: 2px solid $primary-font-color;
+        bottom: 2px solid $brand-color-1;
         radius: 8px;
       }
     }
