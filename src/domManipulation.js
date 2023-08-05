@@ -25,3 +25,8 @@ export function displaySelectedFilterOption(criteria) {
     }
   });
 }
+
+export function displayTotalSpent(total) {
+  const totalSpentEl = document.querySelector('.total-spent-value');
+  totalSpentEl.innerText = total.toLocaleString('en-US');
+}

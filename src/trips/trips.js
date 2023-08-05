@@ -1,11 +1,12 @@
 import '../stylesheets/partials/trips/_trips-base.scss';
 
 import { userStore } from '../scripts';
-import { filterTrips } from '../model';
+import { calcTotalSpentByYear, filterTrips } from '../model';
 import { getAPIData } from '../apiCalls';
 import {
   displayFilteredTrips,
   displaySelectedFilterOption,
+  displayTotalSpent,
 } from '../domManipulation';
 
 // Query Selectors
@@ -48,30 +49,39 @@ export function setAndProcessData() {
   Promise.all([
     getAPIData(dataStore.getAPIKey('trips')),
     getAPIData(dataStore.getAPIKey('destinations')),
-  ]).then(values => {
-    const [trips, destinations] = values;
-    dataStore.setKey('trips', trips.trips);
-    dataStore.setKey('destinations', destinations.destinations);
-  });
+  ])
+    .then(values => {
+      const [trips, destinations] = values;
+      dataStore.setKey('trips', trips.trips);
+      dataStore.setKey('destinations', destinations.destinations);
+    })
+    .then(() => {
+      processData();
+    });
 }
 
-// Event Listeners
-window.addEventListener('load', () => {
-  let tripData = aggregateTripData('past');
+function processData(criteria = 'past') {
+  let tripData = aggregateTripData(criteria);
   displayFilteredTrips({
     trips: tripData.filteredTrips,
     destinations: dataStore.getKey('destinations'),
   });
-  displaySelectedFilterOption('past');
+  displaySelectedFilterOption(criteria);
+  displayTotalSpent(calcTotalSpentByYear(
+    userStore.getKey('currentUser').id,
+    dataStore.getKey('trips'),
+    dataStore.getKey('destinations'),
+    '2022' // change to be current year when trips can be approved
+  ))
+}
+
+// Event Listeners
+window.addEventListener('load', () => {
+  setAndProcessData();
 
   filterBtns.forEach(btn => {
     btn.onclick = e => {
-      tripData = aggregateTripData(`${e.target.id}`);
-      displayFilteredTrips({
-        trips: tripData.filteredTrips,
-        destinations: dataStore.getKey('destinations'),
-      });
-      displaySelectedFilterOption(`${e.target.id}`);
+      processData(e.target.id);
     };
   });
 });

@@ -779,7 +779,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   displayFilteredTrips: () => (/* binding */ displayFilteredTrips),
-/* harmony export */   displaySelectedFilterOption: () => (/* binding */ displaySelectedFilterOption)
+/* harmony export */   displaySelectedFilterOption: () => (/* binding */ displaySelectedFilterOption),
+/* harmony export */   displayTotalSpent: () => (/* binding */ displayTotalSpent)
 /* harmony export */ });
 /* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
 /* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18);
@@ -811,6 +812,10 @@ function displaySelectedFilterOption(criteria) {
   });
 }
 
+function displayTotalSpent(total) {
+  const totalSpentEl = document.querySelector('.total-spent-value');
+  totalSpentEl.innerText = total.toLocaleString('en-US');
+}
 
 /***/ }),
 /* 18 */
@@ -985,30 +990,39 @@ function setAndProcessData() {
   Promise.all([
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_3__.getAPIData)(dataStore.getAPIKey('trips')),
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_3__.getAPIData)(dataStore.getAPIKey('destinations')),
-  ]).then(values => {
-    const [trips, destinations] = values;
-    dataStore.setKey('trips', trips.trips);
-    dataStore.setKey('destinations', destinations.destinations);
-  });
+  ])
+    .then(values => {
+      const [trips, destinations] = values;
+      dataStore.setKey('trips', trips.trips);
+      dataStore.setKey('destinations', destinations.destinations);
+    })
+    .then(() => {
+      processData();
+    });
 }
 
-// Event Listeners
-window.addEventListener('load', () => {
-  let tripData = aggregateTripData('past');
+function processData(criteria = 'past') {
+  let tripData = aggregateTripData(criteria);
   (0,_domManipulation__WEBPACK_IMPORTED_MODULE_4__.displayFilteredTrips)({
     trips: tripData.filteredTrips,
     destinations: dataStore.getKey('destinations'),
   });
-  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_4__.displaySelectedFilterOption)('past');
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_4__.displaySelectedFilterOption)(criteria);
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_4__.displayTotalSpent)((0,_model__WEBPACK_IMPORTED_MODULE_2__.calcTotalSpentByYear)(
+    _scripts__WEBPACK_IMPORTED_MODULE_1__.userStore.getKey('currentUser').id,
+    dataStore.getKey('trips'),
+    dataStore.getKey('destinations'),
+    '2022' // change to be current year when trips can be approved
+  ))
+}
+
+// Event Listeners
+window.addEventListener('load', () => {
+  setAndProcessData();
 
   filterBtns.forEach(btn => {
     btn.onclick = e => {
-      tripData = aggregateTripData(`${e.target.id}`);
-      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_4__.displayFilteredTrips)({
-        trips: tripData.filteredTrips,
-        destinations: dataStore.getKey('destinations'),
-      });
-      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_4__.displaySelectedFilterOption)(`${e.target.id}`);
+      processData(e.target.id);
     };
   });
 });
