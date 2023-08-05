@@ -5,8 +5,11 @@ export function displayFilteredTrips(tripData) {
   const resultsEl = document.querySelector('.results-container');
   resultsEl.innerHTML = '';
 
-  tripData.forEach(trip => {
-    const destination = findDestinationByID(trip.destinationID);
+  tripData.trips.forEach(trip => {
+    const destination = findDestinationByID(
+      tripData.destinations,
+      trip.destinationID
+    );
     resultsEl.appendChild(new TripCard(trip, destination));
   });
 }

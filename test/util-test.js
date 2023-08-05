@@ -3,39 +3,13 @@ import { filterTrips } from '../src/model';
 import { sampleTrips } from '../src/data/sampleData';
 
 describe('Should filter the data', () => {
-  let allTrips, tripsByYear, pastTrips, upcomingTrips, pendingTrips;
+  let tripsByYear, pastTrips, upcomingTrips, pendingTrips;
 
   beforeEach('init data', () => {
-    allTrips = filterTrips(sampleTrips, 'all', 1);
     tripsByYear = filterTrips(sampleTrips, 'byYear', 1, '2023');
-    pastTrips = filterTrips(sampleTrips, 'past');
-    upcomingTrips = filterTrips(sampleTrips, 'upcoming');
-    pendingTrips = filterTrips(sampleTrips, 'pending');
-  });
-
-  it('Should return all trips', () => {
-    expect(allTrips).to.deep.equal([
-      {
-        id: 1,
-        userID: 1,
-        destinationID: 3,
-        travelers: 1,
-        date: '2022/09/16',
-        duration: 8,
-        status: 'approved',
-        suggestedActivities: [],
-      },
-      {
-        id: 2,
-        userID: 1,
-        destinationID: 2,
-        travelers: 4,
-        date: '2023/08/30',
-        duration: 3,
-        status: 'approved',
-        suggestedActivities: [],
-      },
-    ]);
+    pastTrips = filterTrips(sampleTrips, 'past', 1);
+    upcomingTrips = filterTrips(sampleTrips, 'upcoming', 1);
+    pendingTrips = filterTrips(sampleTrips, 'pending', 1);
   });
 
   it('Should return all trips by user id and year', () => {
@@ -65,16 +39,6 @@ describe('Should filter the data', () => {
         status: 'approved',
         suggestedActivities: [],
       },
-      {
-        id: 3,
-        userID: 37,
-        destinationID: 1,
-        travelers: 2,
-        date: '2023/03/01',
-        duration: 7,
-        status: 'approved',
-        suggestedActivities: [],
-      },
     ]);
   });
 
@@ -96,7 +60,7 @@ describe('Should filter the data', () => {
   it('Should not return upcoming trip if it is pending', () => {
     expect(upcomingTrips).to.not.deep.include({
       id: 4,
-      userID: 50,
+      userID: 1,
       destinationID: 2,
       travelers: 6,
       date: '2023/11/11',
@@ -110,7 +74,7 @@ describe('Should filter the data', () => {
     expect(pendingTrips).to.deep.equal([
       {
         id: 4,
-        userID: 50,
+        userID: 1,
         destinationID: 2,
         travelers: 6,
         date: '2023/11/11',

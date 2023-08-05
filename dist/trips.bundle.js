@@ -61,12 +61,8 @@ function initStore() {
   };
 }
 
-let store;
-
-document.currentScript.onload = () => {
-  store = initStore();
-  initApp();
-};
+const store = initStore();
+initApp();
 
 function initApp() {
   Promise.all([
@@ -659,16 +655,12 @@ function postFlightRequest(
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   aggregateTripData: () => (/* binding */ aggregateTripData),
 /* harmony export */   calcTotalCostOfTrip: () => (/* binding */ calcTotalCostOfTrip),
 /* harmony export */   calcTotalSpentByYear: () => (/* binding */ calcTotalSpentByYear),
 /* harmony export */   filterTrips: () => (/* binding */ filterTrips),
 /* harmony export */   findDestinationByID: () => (/* binding */ findDestinationByID),
 /* harmony export */   getRandomTraveler: () => (/* binding */ getRandomTraveler)
 /* harmony export */ });
-/* harmony import */ var _scripts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-
-
 /* -------------- Util -------------- */
 
 function filterTrips(tripData, criteria, travelerID, year = '2023') {
@@ -681,14 +673,14 @@ function filterTrips(tripData, criteria, travelerID, year = '2023') {
   tripData = tripData.filter(trip => trip.userID === travelerID);
 
   switch (criteria) {
-    case 'all':
-      return tripData.filter(trip => trip.userID === travelerID);
     case 'byYear':
       return tripData.filter(
-        trip => trip.userID === travelerID && trip.date.slice(0, 4) === year,
+        trip => trip.date.slice(0, 4) === year && trip.status !== 'pending',
       );
     case 'past':
-      return tripData.filter(trip => trip.date < currentDate && trip.status !== 'pending');
+      return tripData.filter(
+        trip => trip.date < currentDate && trip.status !== 'pending',
+      );
     case 'upcoming':
       return tripData.filter(
         trip => trip.date > currentDate && trip.status === 'approved',
@@ -710,7 +702,8 @@ function getRandomTraveler(travelers) {
 
 function calcTotalSpentByYear(userID, trips, destinations, year) {
   return filterTrips(trips, 'byYear', userID, year).reduce((acc, trip) => {
-    const total = calcTotalCostOfTrip(trip);
+    const destination = findDestinationByID(destinations, trip.destinationID);
+    const total = calcTotalCostOfTrip(trip, destination);
 
     acc += total;
 
@@ -718,8 +711,7 @@ function calcTotalSpentByYear(userID, trips, destinations, year) {
   }, 0);
 }
 
-function calcTotalCostOfTrip(trip) {
-  const destination = findDestinationByID(trip.destinationID);
+function calcTotalCostOfTrip(trip, destination) {
   const flightCost =
     trip.travelers * (destination.estimatedFlightCostPerPerson * 2);
 
@@ -733,18 +725,8 @@ function calcTotalCostOfTrip(trip) {
 
 /* -------------- Trips -------------- */
 
-function aggregateTripData(filterCriteria) {
-  const trips = _scripts__WEBPACK_IMPORTED_MODULE_0__.store.getKey('trips');
-  const userID = _scripts__WEBPACK_IMPORTED_MODULE_0__.store.getKey('currentUser').id;
-  const filteredTrips = filterTrips(trips, filterCriteria, userID);
-  return {
-    userID,
-    filteredTrips,
-  };
-}
-
-function findDestinationByID(destID) {
-  return _scripts__WEBPACK_IMPORTED_MODULE_0__.store.getKey('destinations').find(dest => dest.id === destID);
+function findDestinationByID(destinations, destID) {
+  return destinations.find(dest => dest.id === destID);
 }
 
 
@@ -820,6 +802,46 @@ __webpack_require__.r(__webpack_exports__);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   displayFilteredTrips: () => (/* binding */ displayFilteredTrips),
+/* harmony export */   displaySelectedFilterOption: () => (/* binding */ displaySelectedFilterOption)
+/* harmony export */ });
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
+/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18);
+
+
+
+function displayFilteredTrips(tripData) {
+  const resultsEl = document.querySelector('.results-container');
+  resultsEl.innerHTML = '';
+
+  tripData.trips.forEach(trip => {
+    const destination = (0,_model__WEBPACK_IMPORTED_MODULE_0__.findDestinationByID)(
+      tripData.destinations,
+      trip.destinationID
+    );
+    resultsEl.appendChild(new _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__.TripCard(trip, destination));
+  });
+}
+
+function displaySelectedFilterOption(criteria) {
+  const btns = document.querySelectorAll('.filter-btn');
+
+  btns.forEach(btn => {
+    if (btn.id === criteria) {
+      btn.classList.add('selected');
+    } else {
+      btn.classList.remove('selected');
+    }
+  });
+}
+
+
+/***/ }),
+/* 18 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   TripCard: () => (/* binding */ TripCard)
 /* harmony export */ });
 function TripCard(trip, destination) {
@@ -851,43 +873,6 @@ function TripCard(trip, destination) {
   return card;
 }
 
-
-
-/***/ }),
-/* 18 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   displayFilteredTrips: () => (/* binding */ displayFilteredTrips),
-/* harmony export */   displaySelectedFilterOption: () => (/* binding */ displaySelectedFilterOption)
-/* harmony export */ });
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
-/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17);
-
-
-
-function displayFilteredTrips(tripData) {
-  const resultsEl = document.querySelector('.results-container');
-  resultsEl.innerHTML = '';
-
-  tripData.forEach(trip => {
-    const destination = (0,_model__WEBPACK_IMPORTED_MODULE_0__.findDestinationByID)(trip.destinationID);
-    resultsEl.appendChild(new _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__.TripCard(trip, destination));
-  });
-}
-
-function displaySelectedFilterOption(criteria) {
-  const btns = document.querySelectorAll('.filter-btn');
-
-  btns.forEach(btn => {
-    if (btn.id === criteria) {
-      btn.classList.add('selected');
-    } else {
-      btn.classList.remove('selected');
-    }
-  });
-}
 
 
 /***/ })
@@ -969,8 +954,10 @@ var __webpack_exports__ = {};
 (() => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _stylesheets_partials_trips_trips_base_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(14);
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
-/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(18);
+/* harmony import */ var _scripts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
+/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17);
+
 
 
 
@@ -982,20 +969,38 @@ __webpack_require__.r(__webpack_exports__);
 
 const filterBtns = document.querySelectorAll('.filter-btn');
 
-// Event Listeners
-window.onload = () => {
-  let tripData = (0,_model__WEBPACK_IMPORTED_MODULE_1__.aggregateTripData)('past');
-  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_2__.displayFilteredTrips)(tripData.filteredTrips);
-  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_2__.displaySelectedFilterOption)('past');
-};
 
-filterBtns.forEach(btn => {
-  btn.onclick = e => {
-    let tripData = (0,_model__WEBPACK_IMPORTED_MODULE_1__.aggregateTripData)(`${e.target.id}`);
-    (0,_domManipulation__WEBPACK_IMPORTED_MODULE_2__.displayFilteredTrips)(tripData.filteredTrips);
-    (0,_domManipulation__WEBPACK_IMPORTED_MODULE_2__.displaySelectedFilterOption)(`${e.target.id}`);
-  };
+// Event Listeners
+window.addEventListener('load', () => {
+  let tripData = aggregateTripData('past');
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayFilteredTrips)({
+    trips: tripData.filteredTrips,
+    destinations: _scripts__WEBPACK_IMPORTED_MODULE_1__.store.getKey('destinations'),
+  });
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displaySelectedFilterOption)('past');
+  
+  filterBtns.forEach(btn => {
+    btn.onclick = e => {
+      tripData = aggregateTripData(`${e.target.id}`);
+      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayFilteredTrips)({
+        trips: tripData.filteredTrips,
+        destinations: _scripts__WEBPACK_IMPORTED_MODULE_1__.store.getKey('destinations'),
+      });
+      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displaySelectedFilterOption)(`${e.target.id}`);
+    };
+  });
 });
+
+
+function aggregateTripData(filterCriteria) {
+  const trips = _scripts__WEBPACK_IMPORTED_MODULE_1__.store.getKey('trips');
+  const userID = _scripts__WEBPACK_IMPORTED_MODULE_1__.store.getKey('currentUser').id;
+  const filteredTrips = (0,_model__WEBPACK_IMPORTED_MODULE_2__.filterTrips)(trips, filterCriteria, userID);
+  return {
+    userID,
+    filteredTrips,
+  };
+}
 
 })();
 

@@ -1,90 +1,7 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ([
-/* 0 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   initApp: () => (/* binding */ initApp),
-/* harmony export */   store: () => (/* binding */ store)
-/* harmony export */ });
-/* harmony import */ var _stylesheets_index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
-
-
-
-
-
-// Query Selectors
-
-// Nav
-const navBtns = document.querySelectorAll('.site-nav-list-item');
-
-
-// Event Listeners
-
-navBtns.forEach(btn => {
-  btn.onclick = (e) => {
-    window.location.href = `${e.target.id}.html`
-  }
-})
-
-// Functions
-
-function initStore() {
-  const store = {
-    apiKey: {
-      base: 'http://localhost:3001/api/v1/',
-      endpoints: {
-        travelers: 'travelers',
-        trips: 'trips',
-        destinations: 'destinations',
-      },
-    },
-  };
-
-  return {
-    getAPIKey(endpoint) {
-      const ref = store.apiKey;
-      return `${ref.base}${ref.endpoints[endpoint]}`;
-    },
-
-    getKey(key) {
-      return store[key];
-    },
-
-    setKey(key, value) {
-      store[key] = value;
-    },
-  };
-}
-
-let store;
-
-document.currentScript.onload = () => {
-  store = initStore();
-  initApp();
-};
-
-function initApp() {
-  Promise.all([
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('travelers')),
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('trips')),
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('destinations')),
-  ])
-    .then(values => {
-      const [travelers, trips, destinations] = values;
-      store.setKey('travelers', travelers.travelers);
-      store.setKey('trips', trips.trips);
-      store.setKey('destinations', destinations.destinations);
-      store.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_2__.getRandomTraveler)(store.getKey('travelers')));
-    })
-}
-
-
-/***/ }),
+/* 0 */,
 /* 1 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -659,16 +576,12 @@ function postFlightRequest(
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   aggregateTripData: () => (/* binding */ aggregateTripData),
 /* harmony export */   calcTotalCostOfTrip: () => (/* binding */ calcTotalCostOfTrip),
 /* harmony export */   calcTotalSpentByYear: () => (/* binding */ calcTotalSpentByYear),
 /* harmony export */   filterTrips: () => (/* binding */ filterTrips),
 /* harmony export */   findDestinationByID: () => (/* binding */ findDestinationByID),
 /* harmony export */   getRandomTraveler: () => (/* binding */ getRandomTraveler)
 /* harmony export */ });
-/* harmony import */ var _scripts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-
-
 /* -------------- Util -------------- */
 
 function filterTrips(tripData, criteria, travelerID, year = '2023') {
@@ -681,14 +594,14 @@ function filterTrips(tripData, criteria, travelerID, year = '2023') {
   tripData = tripData.filter(trip => trip.userID === travelerID);
 
   switch (criteria) {
-    case 'all':
-      return tripData.filter(trip => trip.userID === travelerID);
     case 'byYear':
       return tripData.filter(
-        trip => trip.userID === travelerID && trip.date.slice(0, 4) === year,
+        trip => trip.date.slice(0, 4) === year && trip.status !== 'pending',
       );
     case 'past':
-      return tripData.filter(trip => trip.date < currentDate && trip.status !== 'pending');
+      return tripData.filter(
+        trip => trip.date < currentDate && trip.status !== 'pending',
+      );
     case 'upcoming':
       return tripData.filter(
         trip => trip.date > currentDate && trip.status === 'approved',
@@ -710,7 +623,8 @@ function getRandomTraveler(travelers) {
 
 function calcTotalSpentByYear(userID, trips, destinations, year) {
   return filterTrips(trips, 'byYear', userID, year).reduce((acc, trip) => {
-    const total = calcTotalCostOfTrip(trip);
+    const destination = findDestinationByID(destinations, trip.destinationID);
+    const total = calcTotalCostOfTrip(trip, destination);
 
     acc += total;
 
@@ -718,8 +632,7 @@ function calcTotalSpentByYear(userID, trips, destinations, year) {
   }, 0);
 }
 
-function calcTotalCostOfTrip(trip) {
-  const destination = findDestinationByID(trip.destinationID);
+function calcTotalCostOfTrip(trip, destination) {
   const flightCost =
     trip.travelers * (destination.estimatedFlightCostPerPerson * 2);
 
@@ -733,18 +646,8 @@ function calcTotalCostOfTrip(trip) {
 
 /* -------------- Trips -------------- */
 
-function aggregateTripData(filterCriteria) {
-  const trips = _scripts__WEBPACK_IMPORTED_MODULE_0__.store.getKey('trips');
-  const userID = _scripts__WEBPACK_IMPORTED_MODULE_0__.store.getKey('currentUser').id;
-  const filteredTrips = filterTrips(trips, filterCriteria, userID);
-  return {
-    userID,
-    filteredTrips,
-  };
-}
-
-function findDestinationByID(destID) {
-  return _scripts__WEBPACK_IMPORTED_MODULE_0__.store.getKey('destinations').find(dest => dest.id === destID);
+function findDestinationByID(destinations, destID) {
+  return destinations.find(dest => dest.id === destID);
 }
 
 
@@ -822,12 +725,86 @@ function findDestinationByID(destID) {
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__(0);
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   initApp: () => (/* binding */ initApp),
+/* harmony export */   store: () => (/* binding */ store)
+/* harmony export */ });
+/* harmony import */ var _stylesheets_index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
+
+
+
+
+
+// Query Selectors
+
+// Nav
+const navBtns = document.querySelectorAll('.site-nav-list-item');
+
+
+// Event Listeners
+
+navBtns.forEach(btn => {
+  btn.onclick = (e) => {
+    window.location.href = `${e.target.id}.html`
+  }
+})
+
+// Functions
+
+function initStore() {
+  const store = {
+    apiKey: {
+      base: 'http://localhost:3001/api/v1/',
+      endpoints: {
+        travelers: 'travelers',
+        trips: 'trips',
+        destinations: 'destinations',
+      },
+    },
+  };
+
+  return {
+    getAPIKey(endpoint) {
+      const ref = store.apiKey;
+      return `${ref.base}${ref.endpoints[endpoint]}`;
+    },
+
+    getKey(key) {
+      return store[key];
+    },
+
+    setKey(key, value) {
+      store[key] = value;
+    },
+  };
+}
+
+const store = initStore();
+initApp();
+
+function initApp() {
+  Promise.all([
+    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('travelers')),
+    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('trips')),
+    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_1__.getAPIData)(store.getAPIKey('destinations')),
+  ])
+    .then(values => {
+      const [travelers, trips, destinations] = values;
+      store.setKey('travelers', travelers.travelers);
+      store.setKey('trips', trips.trips);
+      store.setKey('destinations', destinations.destinations);
+      store.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_2__.getRandomTraveler)(store.getKey('travelers')));
+    })
+}
+
+})();
+
 /******/ })()
 ;
 //# sourceMappingURL=index.bundle.js.map

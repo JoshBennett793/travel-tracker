@@ -31,7 +31,7 @@ export const sampleTrips = [
   },
   {
     id: 4,
-    userID: 50,
+    userID: 1,
     destinationID: 2,
     travelers: 6,
     date: '2023/11/11',

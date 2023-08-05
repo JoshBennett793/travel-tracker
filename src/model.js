@@ -1,5 +1,3 @@
-import { store } from './scripts';
-
 /* -------------- Util -------------- */
 
 export function filterTrips(tripData, criteria, travelerID, year = '2023') {
@@ -12,14 +10,14 @@ export function filterTrips(tripData, criteria, travelerID, year = '2023') {
   tripData = tripData.filter(trip => trip.userID === travelerID);
 
   switch (criteria) {
-    case 'all':
-      return tripData.filter(trip => trip.userID === travelerID);
     case 'byYear':
       return tripData.filter(
-        trip => trip.userID === travelerID && trip.date.slice(0, 4) === year,
+        trip => trip.date.slice(0, 4) === year && trip.status !== 'pending',
       );
     case 'past':
-      return tripData.filter(trip => trip.date < currentDate && trip.status !== 'pending');
+      return tripData.filter(
+        trip => trip.date < currentDate && trip.status !== 'pending',
+      );
     case 'upcoming':
       return tripData.filter(
         trip => trip.date > currentDate && trip.status === 'approved',
@@ -41,7 +39,8 @@ export function getRandomTraveler(travelers) {
 
 export function calcTotalSpentByYear(userID, trips, destinations, year) {
   return filterTrips(trips, 'byYear', userID, year).reduce((acc, trip) => {
-    const total = calcTotalCostOfTrip(trip);
+    const destination = findDestinationByID(destinations, trip.destinationID);
+    const total = calcTotalCostOfTrip(trip, destination);
 
     acc += total;
 
@@ -49,8 +48,7 @@ export function calcTotalSpentByYear(userID, trips, destinations, year) {
   }, 0);
 }
 
-export function calcTotalCostOfTrip(trip) {
-  const destination = findDestinationByID(trip.destinationID);
+export function calcTotalCostOfTrip(trip, destination) {
   const flightCost =
     trip.travelers * (destination.estimatedFlightCostPerPerson * 2);
 
@@ -64,16 +62,6 @@ export function calcTotalCostOfTrip(trip) {
 
 /* -------------- Trips -------------- */
 
-export function aggregateTripData(filterCriteria) {
-  const trips = store.getKey('trips');
-  const userID = store.getKey('currentUser').id;
-  const filteredTrips = filterTrips(trips, filterCriteria, userID);
-  return {
-    userID,
-    filteredTrips,
-  };
-}
-
-export function findDestinationByID(destID) {
-  return store.getKey('destinations').find(dest => dest.id === destID);
+export function findDestinationByID(destinations, destID) {
+  return destinations.find(dest => dest.id === destID);
 }
