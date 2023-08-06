@@ -1,3 +1,5 @@
+import { getAPIData } from './apiCalls';
+
 /* -------------- Util -------------- */
 
 export function filterTrips(tripData, criteria, travelerID, year = '2023') {
@@ -64,4 +66,8 @@ export function calcTotalCostOfTrip(trip, destination) {
 
 export function findDestinationByID(destinations, destID) {
   return destinations.find(dest => dest.id === destID);
+}
+
+export function findIDByDestination(destinations, destName) {
+  return destinations.find(dest => dest.destination === destName).id;
 }
