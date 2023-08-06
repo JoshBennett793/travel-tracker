@@ -1,0 +1,85 @@
+@import '../base';
+@import './trips-card';
+
+body {
+  background: $brand-color-5;
+
+  /* Hide Scroll Bar Across Browsers */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  /* Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.trips-page-bg-img-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 60%;
+  width: 100%;
+
+  background: url('./trips-bg.jpg') no-repeat center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  z-index: -1;
+}
+
+.trips-main {
+  background-color: $brand-color-5;
+
+  position: relative;
+  top: 40%;
+
+  width: 100%;
+
+  border-top: {
+    left-radius: 25px;
+    right-radius: 25px;
+  }
+
+  overflow: hidden;
+}
+
+.upper-main {
+  @include centered-flex-container;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 2%;
+
+  .filter-btn-container {
+    button {
+      border: none;
+      background-color: transparent;
+      padding: 10px;
+
+      cursor: pointer;
+    }
+
+    button.selected,
+    button:hover {
+      border: none {
+        bottom: 2px solid $brand-color-1;
+        radius: 8px;
+      }
+    }
+  }
+}
+
+.lower-main {
+  @include vertical-centered-flex-container;
+
+  width: 100%;
+  padding: 2rem;
+}
+
+.selected {
+  border: none {
+    bottom: 2px solid $primary-font-color;
+    radius: 15px;
+  }
+}
