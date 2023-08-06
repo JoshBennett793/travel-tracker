@@ -29,39 +29,41 @@
 
     <div class="request-form-container">
       <form action="#" id="request-form">
-        <div class="dropdown-container">
+        <div class="form-inputs">
+          <div class="dropdown-container">
+            <div class="form-element">
+              <label for="destination">Destination:</label>
+              <input
+                type="text"
+                name="destination"
+                id="destination"
+                placeholder="Destination"
+                aria-label="Press enter to expand dropdown menu"
+                required
+              />
+            </div>
+            <div class="dropdown-options"></div>
+          </div>
           <div class="form-element">
-            <label for="destination">Destination:</label>
+            <label for="start-date">Start Date:</label>
+            <input type="date" name="start-date" id="start-date" required />
+          </div>
+          <div class="form-element">
+            <label for="end-date">End Date:</label>
+            <input type="date" name="end-date" id="end-date" required />
+          </div>
+          <div class="form-element">
+            <label for="pax">Pax:</label>
             <input
-              type="text"
-              name="destination"
-              id="destination"
-              placeholder="Destination"
-              aria-label="Press enter to expand dropdown menu"
+              type="number"
+              name="pax"
+              id="pax"
+              min="1"
+              max="20"
+              placeholder="#"
               required
             />
           </div>
-          <div class="dropdown-options"></div>
-        </div>
-        <div class="form-element">
-          <label for="start-date">Start Date:</label>
-          <input type="date" name="start-date" id="start-date" required />
-        </div>
-        <div class="form-element">
-          <label for="end-date">End Date:</label>
-          <input type="date" name="end-date" id="end-date" required />
-        </div>
-        <div class="form-element">
-          <label for="pax">Pax:</label>
-          <input
-            type="number"
-            name="pax"
-            id="pax"
-            min="1"
-            max="20"
-            placeholder="#"
-            required
-          />
         </div>
         <div class="button-container"><button>Request</button></div>
       </form>

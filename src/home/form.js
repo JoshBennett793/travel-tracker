@@ -1,9 +1,13 @@
 import {
-  openDropdownOnEnterKeyPress,
+  handleFormKeyboardInput,
   renderAllDestinationOptions,
   setMinDateOption,
 } from '../domManipulation';
 import { calcTimeDifference, findIDByDestination } from '../model';
+
+// Query Selectors
+
+const destinationInput = document.querySelector('#destination');
 
 // Event Listeners
 
@@ -16,8 +20,14 @@ window.onload = () => {
     })
     .then(data => {
       renderAllDestinationOptions(data.destinations);
-      openDropdownOnEnterKeyPress();
+      handleFormKeyboardInput();
       setMinDateOption();
+      return data;
+    })
+    .then(data => {
+      destinationInput.onkeyup = () => {
+        renderAllDestinationOptions(data.destinations);
+      };
     });
 };
 

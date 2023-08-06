@@ -6,10 +6,8 @@
   margin: 5vh auto;
 
   #request-form {
-    @include centered-flex-container;
+    @include vertical-centered-flex-container;
     width: 100%;
-    padding: 10px;
-    gap: 10px;
 
     #pax {
       width: 100px;
@@ -24,7 +22,7 @@
 
 .dropdown-options {
   display: none;
-  height: 200px;
+  height: 400px;
   position: absolute;
   overflow: auto;
   background-color: #fff;
@@ -47,10 +45,10 @@
   }
 }
 
-.dropdown-container:hover .dropdown-options,
-input#destination:focus .dropdown-options {
+.dropdown-container:hover .dropdown-options {
   display: block;
 }
+// use js to make dropdown display block when input is in focus
 
 .form-element {
   @include vertical-centered-flex-container;
@@ -62,5 +60,32 @@ input#destination:focus .dropdown-options {
 
   & > input {
     color: $brand-color-2;
+  }
+}
+
+.form-inputs {
+  @include centered-flex-container;
+  gap: 10px;
+  padding: 30px;
+
+  input {
+    &:valid {
+      border: 2px solid lightgreen;
+    }
+  }
+}
+
+.button-container {
+  button {
+    width: 10rem;
+    height: 2rem;
+
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid $brand-color-1 {
+      radius: 1px;
+    }
+    color: $brand-color-1;
+
+    cursor: pointer;
   }
 }

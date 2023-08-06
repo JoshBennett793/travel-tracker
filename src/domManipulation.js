@@ -37,10 +37,16 @@ export function displayTotalSpent(total) {
 // Trip Request Form Inputs
 const requestFormDestinationInput = document.querySelector('#destination');
 const dropdownOpts = document.querySelector('.dropdown-options');
-const dateInputs = document.querySelectorAll('input[type="date"]')
+const dateInputs = document.querySelectorAll('input[type="date"]');
 
 export function renderAllDestinationOptions(destinations) {
   dropdownOpts.innerHTML = '';
+  if (requestFormDestinationInput.value) {
+    destinations = destinations.filter(dest =>
+      dest.destination.includes(requestFormDestinationInput.value),
+    );
+  }
+
   destinations.forEach(dest => {
     dropdownOpts.appendChild(new FormOption(dest));
   });
@@ -65,11 +71,13 @@ function FormOption(destination) {
 
   return destOption;
 }
-export function openDropdownOnEnterKeyPress() {
+export function handleFormKeyboardInput() {
   requestFormDestinationInput.onkeypress = e => {
     e.preventDefault();
     if (e.key === 'Enter' || e.keyCode === 13) {
       dropdownOpts.style.display = 'block';
+    } else {
+      requestFormDestinationInput.value += e.key;
     }
   };
 }
@@ -77,15 +85,11 @@ export function openDropdownOnEnterKeyPress() {
 export function setMinDateOption() {
   dateInputs.forEach(input => {
     input.min = new Date().toISOString().split('T')[0];
-  })
+  });
 }
 
 // validate for if input is present in destinations array
 
 export function navigateToPending() {
   window.location.href = 'trips.html';
-  console.log(document.querySelector('#pending'));
-  document.querySelector('#pending').click();
-  setAndProcessData();
-
 }

@@ -72,6 +72,16 @@ function processData(criteria = 'pending') {
   );
 }
 
+function aggregateTripData(filterCriteria) {
+  const trips = dataStore.getKey('trips');
+  const userID = userStore.getKey('currentUser').id;
+  const filteredTrips = filterTrips(trips, filterCriteria, userID);
+  return {
+    userID,
+    filteredTrips,
+  };
+}
+
 // Event Listeners
 window.addEventListener('load', () => {
   setAndProcessData();
@@ -82,13 +92,3 @@ window.addEventListener('load', () => {
     };
   });
 });
-
-function aggregateTripData(filterCriteria) {
-  const trips = dataStore.getKey('trips');
-  const userID = userStore.getKey('currentUser').id;
-  const filteredTrips = filterTrips(trips, filterCriteria, userID);
-  return {
-    userID,
-    filteredTrips,
-  };
-}
