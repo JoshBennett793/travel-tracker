@@ -48,27 +48,40 @@ function displayTotalSpent(total) {
 }
 
 // Trip Request Form Inputs
+const requestFormDestinationInput = document.querySelector('input#destination');
+const dropdownOpts = document.querySelector('.dropdown-options');
 
 function renderAllDestinationOptions(destinations) {
-  const dropdownOpts = document.querySelector('.dropdown-options');
   dropdownOpts.innerHTML = '';
   destinations.forEach(dest => {
     dropdownOpts.appendChild(new FormOption(dest));
-
   });
 }
 
 function FormOption(destination) {
   const destOption = document.createElement('p');
   destOption.innerText = destination.destination;
-
+  destOption.setAttribute('tabindex', 0);
+  
   destOption.onclick = () => {
-    const destInput = document.querySelector('input#destination');
-    destInput.value = destOption.innerText;
+    requestFormDestinationInput.value = destOption.innerText;
   }
 
+  destOption.onkeypress = e => {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+      e.target.click();
+    }
+  }
+  
   return destOption;
 }
+
+requestFormDestinationInput.onkeypress = e => {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    dropdownOpts.style.display = 'block';
+  }
+}
+
 
 // validate for if input is present in destinations array
 
@@ -92,6 +105,8 @@ window.onload = () => {
       (0,_domManipulation__WEBPACK_IMPORTED_MODULE_0__.renderAllDestinationOptions)(data.destinations);
     });
 };
+
+
 
 /***/ }),
 

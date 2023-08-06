@@ -11,3 +11,4 @@ window.onload = () => {
       renderAllDestinationOptions(data.destinations);
     });
 };
+

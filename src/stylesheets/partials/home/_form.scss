@@ -37,6 +37,10 @@
   display: block;
 }
 
+input#destination:focus .dropdown-options {
+  display: block;
+}
+
 .dropdown-options p {
   display: block;
   color: #000000;
