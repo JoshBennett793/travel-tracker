@@ -27,8 +27,10 @@ export function displaySelectedFilterOption(criteria) {
 }
 
 export function displayTotalSpent(total) {
+  const totalSpentContainer = document.querySelector('.total-spent');
   const totalSpentEl = document.querySelector('.total-spent-value');
   totalSpentEl.innerText = total.toLocaleString('en-US');
+  totalSpentContainer.setAttribute('tabindex', 0);
 }
 
 // Trip Request Form Inputs

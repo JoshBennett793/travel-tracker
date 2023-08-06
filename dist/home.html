@@ -14,7 +14,7 @@
         <nav class="header-site-nav">
           <ul>
             <li class="site-nav-list-item">
-              <button id="home" style="color: #fab02b;">Home</button>
+              <button id="home" style="color: #fab02b">Home</button>
             </li>
             <li class="site-nav-list-item">
               <button id="trips">Trips</button>
@@ -30,11 +30,40 @@
     <div class="request-form-container">
       <form action="#" id="request-form">
         <div class="dropdown-container">
-          <input type="text" name="destination" id="destination" placeholder="Destination">
+          <div class="form-element">
+            <label for="destination">Destination:</label>
+            <input
+              type="text"
+              name="destination"
+              id="destination"
+              placeholder="Destination"
+              aria-label="Press enter to expand dropdown menu"
+              required
+            />
+          </div>
           <div class="dropdown-options"></div>
         </div>
-        <input type="date" name="start-date" id="start-date">
-        <input type="date" name="end-date" id="end-date">
+        <div class="form-element">
+          <label for="start-date">Start Date:</label>
+          <input type="date" name="start-date" id="start-date" required />
+        </div>
+        <div class="form-element">
+          <label for="end-date">End Date:</label>
+          <input type="date" name="end-date" id="end-date" required />
+        </div>
+        <div class="form-element">
+          <label for="pax">Pax:</label>
+          <input
+            type="number"
+            name="pax"
+            id="pax"
+            min="1"
+            max="20"
+            placeholder="#"
+            required
+          />
+        </div>
+        <div class="button-container"><button>Request</button></div>
       </form>
     </div>
     <script src="index.bundle.js"></script>

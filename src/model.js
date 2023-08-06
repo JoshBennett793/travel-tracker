@@ -31,6 +31,15 @@ export function filterTrips(tripData, criteria, travelerID, year = '2023') {
   }
 }
 
+/* -------------- Generic Fetch Call -------------- */
+export function getAllAPIData() {
+  return Promise.all([
+    getAPIData('http://localhost:3001/api/v1/travelers'),
+    getAPIData('http://localhost:3001/api/v1/trips'),
+    getAPIData('http://localhost:3001/api/v1/destinations'),
+  ]).then(values => values);
+}
+
 /* -------------- Travelers -------------- */
 
 export function getRandomTraveler(travelers) {

@@ -1,8 +1,7 @@
 import '../stylesheets/partials/trips/_trips-base.scss';
 
 import { userStore } from '../scripts';
-import { calcTotalSpentByYear, filterTrips } from '../model';
-import { getAPIData } from '../apiCalls';
+import { calcTotalSpentByYear, filterTrips, getAllAPIData } from '../model';
 import {
   displayFilteredTrips,
   displaySelectedFilterOption,
@@ -46,12 +45,9 @@ export const dataStore = initDataStore();
 setAndProcessData();
 
 export function setAndProcessData() {
-  Promise.all([
-    getAPIData(dataStore.getAPIKey('trips')),
-    getAPIData(dataStore.getAPIKey('destinations')),
-  ])
+  getAllAPIData()
     .then(values => {
-      const [trips, destinations] = values;
+      const [travelers, trips, destinations] = values;
       dataStore.setKey('trips', trips.trips);
       dataStore.setKey('destinations', destinations.destinations);
     })
@@ -67,12 +63,14 @@ function processData(criteria = 'past') {
     destinations: dataStore.getKey('destinations'),
   });
   displaySelectedFilterOption(criteria);
-  displayTotalSpent(calcTotalSpentByYear(
-    userStore.getKey('currentUser').id,
-    dataStore.getKey('trips'),
-    dataStore.getKey('destinations'),
-    '2022' // change to be current year when trips can be approved
-  ))
+  displayTotalSpent(
+    calcTotalSpentByYear(
+      userStore.getKey('currentUser').id,
+      dataStore.getKey('trips'),
+      dataStore.getKey('destinations'),
+      '2022', // change to be current year when trips can be approved
+    ),
+  );
 }
 
 // Event Listeners

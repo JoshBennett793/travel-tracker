@@ -9,18 +9,17 @@
     @include centered-flex-container;
     width: 100%;
     padding: 10px;
-
     gap: 10px;
+
+    #pax {
+      width: 100px;
+    }
   }
 }
 
 .dropdown-container {
   display: inline-block;
   position: relative;
-
-  input#destination {
-    color: $brand-color-2;
-  }
 }
 
 .dropdown-options {
@@ -51,4 +50,17 @@
 .dropdown-container:hover .dropdown-options,
 input#destination:focus .dropdown-options {
   display: block;
+}
+
+.form-element {
+  @include vertical-centered-flex-container;
+  align-items: start;
+
+  & > label {
+    color: $brand-color-5;
+  }
+
+  & > input {
+    color: $brand-color-2;
+  }
 }
