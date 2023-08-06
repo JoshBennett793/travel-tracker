@@ -3,7 +3,7 @@ import {
   renderAllDestinationOptions,
   setMinDateOption,
 } from '../domManipulation';
-import { findIDByDestination } from '../model';
+import { calcTimeDifference, findIDByDestination } from '../model';
 
 // Query Selectors
 
@@ -20,10 +20,6 @@ window.onload = () => {
       setMinDateOption();
     });
 };
-
-export function calcTimeDifference(date1, date2) {
-  return 1;
-}
 
 export function packageFormDataForAPI(form) {
   const formData = new FormData(form);

@@ -667,6 +667,7 @@ function postFlightRequest(
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   calcTimeDifference: () => (/* binding */ calcTimeDifference),
 /* harmony export */   calcTotalCostOfTrip: () => (/* binding */ calcTotalCostOfTrip),
 /* harmony export */   calcTotalSpentByYear: () => (/* binding */ calcTotalSpentByYear),
 /* harmony export */   filterTrips: () => (/* binding */ filterTrips),
@@ -747,6 +748,17 @@ function calcTotalCostOfTrip(trip, destination) {
   const agentFee = subTotal * 0.1;
 
   return subTotal + agentFee;
+}
+
+function calcTimeDifference(date1, date2) {
+  date1 = date1.split('-');
+  date2 = date2.split('-');
+  date1 = new Date(`${date1[1]}/${date1[2]}/${date1[0]}`)
+  date2 = new Date(`${date2[1]}/${date2[2]}/${date2[0]}`)
+  
+  const diffInMs = Math.abs(date1 - date2);
+  
+  return diffInMs / (1000 * 60 * 60 * 24);
 }
 
 /* -------------- Trips -------------- */

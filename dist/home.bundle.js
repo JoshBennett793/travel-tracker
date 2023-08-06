@@ -667,6 +667,7 @@ function postFlightRequest(
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   calcTimeDifference: () => (/* binding */ calcTimeDifference),
 /* harmony export */   calcTotalCostOfTrip: () => (/* binding */ calcTotalCostOfTrip),
 /* harmony export */   calcTotalSpentByYear: () => (/* binding */ calcTotalSpentByYear),
 /* harmony export */   filterTrips: () => (/* binding */ filterTrips),
@@ -749,6 +750,17 @@ function calcTotalCostOfTrip(trip, destination) {
   return subTotal + agentFee;
 }
 
+function calcTimeDifference(date1, date2) {
+  date1 = date1.split('-');
+  date2 = date2.split('-');
+  date1 = new Date(`${date1[1]}/${date1[2]}/${date1[0]}`)
+  date2 = new Date(`${date2[1]}/${date2[2]}/${date2[0]}`)
+  
+  const diffInMs = Math.abs(date1 - date2);
+  
+  return diffInMs / (1000 * 60 * 60 * 24);
+}
+
 /* -------------- Trips -------------- */
 
 function findDestinationByID(destinations, destID) {
@@ -769,7 +781,6 @@ function findIDByDestination(destinations, destName) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   calcTimeDifference: () => (/* binding */ calcTimeDifference),
 /* harmony export */   packageFormDataForAPI: () => (/* binding */ packageFormDataForAPI)
 /* harmony export */ });
 /* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15);
@@ -793,15 +804,11 @@ window.onload = () => {
     });
 };
 
-function calcTimeDifference(date1, date2) {
-  return 1;
-}
-
 function packageFormDataForAPI(form) {
   const formData = new FormData(form);
   const formattedFormData = [...formData.entries()].reduce((acc, input) => {
     input[0] === 'end-date'
-      ? (acc.duration = calcTimeDifference(input[1], acc['start-date']))
+      ? (acc.duration = (0,_model__WEBPACK_IMPORTED_MODULE_1__.calcTimeDifference)(input[1], acc['start-date']))
       : (acc[input[0]] = input[1]);
 
     return acc;
@@ -1068,11 +1075,6 @@ requestForm.onsubmit = e => {
     );
   });
 };
-
-// separate out logic that can just be in scripts for fetch get call,
-// in own files, chain then on and do unique functionality
-// this function above needs both trips and destionations api so might
-// as well have the fetch call in scripts
 
 })();
 

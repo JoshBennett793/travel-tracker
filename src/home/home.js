@@ -26,8 +26,3 @@ requestForm.onsubmit = e => {
     );
   });
 };
-
-// separate out logic that can just be in scripts for fetch get call,
-// in own files, chain then on and do unique functionality
-// this function above needs both trips and destionations api so might
-// as well have the fetch call in scripts

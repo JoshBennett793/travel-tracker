@@ -71,6 +71,17 @@ export function calcTotalCostOfTrip(trip, destination) {
   return subTotal + agentFee;
 }
 
+export function calcTimeDifference(date1, date2) {
+  date1 = date1.split('-');
+  date2 = date2.split('-');
+  date1 = new Date(`${date1[1]}/${date1[2]}/${date1[0]}`)
+  date2 = new Date(`${date2[1]}/${date2[2]}/${date2[0]}`)
+  
+  const diffInMs = Math.abs(date1 - date2);
+  
+  return diffInMs / (1000 * 60 * 60 * 24);
+}
+
 /* -------------- Trips -------------- */
 
 export function findDestinationByID(destinations, destID) {
