@@ -57,5 +57,6 @@ export function postFlightRequest(
         );
       }
     })
+    .then(data => data)
     .catch(err => console.error(err));
 }

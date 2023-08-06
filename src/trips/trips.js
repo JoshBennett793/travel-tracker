@@ -42,7 +42,6 @@ function initDataStore() {
 }
 
 export const dataStore = initDataStore();
-setAndProcessData();
 
 export function setAndProcessData() {
   getAllAPIData()
@@ -56,7 +55,7 @@ export function setAndProcessData() {
     });
 }
 
-function processData(criteria = 'past') {
+function processData(criteria = 'pending') {
   let tripData = aggregateTripData(criteria);
   displayFilteredTrips({
     trips: tripData.filteredTrips,

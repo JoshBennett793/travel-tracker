@@ -52,6 +52,7 @@ function initUserStore() {
 function setAndProcessUserData() {
   (0,_apiCalls__WEBPACK_IMPORTED_MODULE_2__.getAPIData)('http://localhost:3001/api/v1/travelers').then(data => {
     userStore.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_3__.getRandomTraveler)(data.travelers));
+    console.log(userStore.getKey('currentUser').id);
   });
 }
 
@@ -656,6 +657,7 @@ function postFlightRequest(
         );
       }
     })
+    .then(data => data)
     .catch(err => console.error(err));
 }
 
@@ -751,13 +753,14 @@ function calcTotalCostOfTrip(trip, destination) {
 }
 
 function calcTimeDifference(date1, date2) {
-  date1 = date1.split('-');
-  date2 = date2.split('-');
-  date1 = new Date(`${date1[1]}/${date1[2]}/${date1[0]}`)
-  date2 = new Date(`${date2[1]}/${date2[2]}/${date2[0]}`)
-  
+  console.log(date1);
+  const splitDate1 = date1.split('-');
+  const splitDate2 = date2.split('-');
+  date1 = new Date(`${splitDate1[1]}/${splitDate1[2]}/${splitDate1[0]}`);
+  date2 = new Date(`${splitDate2[1]}/${splitDate2[2]}/${splitDate2[0]}`);
+
   const diffInMs = Math.abs(date1 - date2);
-  
+
   return diffInMs / (1000 * 60 * 60 * 24);
 }
 
@@ -785,12 +788,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   displayFilteredTrips: () => (/* binding */ displayFilteredTrips),
 /* harmony export */   displaySelectedFilterOption: () => (/* binding */ displaySelectedFilterOption),
 /* harmony export */   displayTotalSpent: () => (/* binding */ displayTotalSpent),
+/* harmony export */   navigateToPending: () => (/* binding */ navigateToPending),
 /* harmony export */   openDropdownOnEnterKeyPress: () => (/* binding */ openDropdownOnEnterKeyPress),
 /* harmony export */   renderAllDestinationOptions: () => (/* binding */ renderAllDestinationOptions),
 /* harmony export */   setMinDateOption: () => (/* binding */ setMinDateOption)
 /* harmony export */ });
 /* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
-/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
+/* harmony import */ var _trips_trips__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17);
+/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
+
 
 
 
@@ -803,7 +809,7 @@ function displayFilteredTrips(tripData) {
       tripData.destinations,
       trip.destinationID,
     );
-    resultsEl.appendChild(new _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__.TripCard(trip, destination));
+    resultsEl.appendChild(new _trips_trips_card__WEBPACK_IMPORTED_MODULE_2__.TripCard(trip, destination));
   });
 }
 
@@ -874,6 +880,13 @@ function setMinDateOption() {
 
 // validate for if input is present in destinations array
 
+function navigateToPending() {
+  window.location.href = 'trips.html';
+  console.log(document.querySelector('#pending'));
+  document.querySelector('#pending').click();
+  (0,_trips_trips__WEBPACK_IMPORTED_MODULE_1__.setAndProcessData)();
+
+}
 
 /***/ }),
 /* 16 */
@@ -920,7 +933,112 @@ function TripCard(trip, destination) {
 
 
 /***/ }),
-/* 17 */,
+/* 17 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   dataStore: () => (/* binding */ dataStore),
+/* harmony export */   setAndProcessData: () => (/* binding */ setAndProcessData)
+/* harmony export */ });
+/* harmony import */ var _stylesheets_partials_trips_trips_base_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(18);
+/* harmony import */ var _scripts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
+/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
+
+
+
+
+
+
+// Query Selectors
+
+// Filter Btns
+
+const filterBtns = document.querySelectorAll('.filter-btn');
+
+function initDataStore() {
+  const store = {
+    apiKey: {
+      base: 'http://localhost:3001/api/v1/',
+      endpoints: {
+        trips: 'trips',
+        destinations: 'destinations',
+      },
+    },
+  };
+
+  return {
+    getAPIKey(endpoint) {
+      const ref = store.apiKey;
+      return `${ref.base}${ref.endpoints[endpoint]}`;
+    },
+
+    getKey(key) {
+      return store[key];
+    },
+
+    setKey(key, value) {
+      store[key] = value;
+    },
+  };
+}
+
+const dataStore = initDataStore();
+
+function setAndProcessData() {
+  (0,_model__WEBPACK_IMPORTED_MODULE_2__.getAllAPIData)()
+    .then(values => {
+      const [travelers, trips, destinations] = values;
+      dataStore.setKey('trips', trips.trips);
+      dataStore.setKey('destinations', destinations.destinations);
+    })
+    .then(() => {
+      processData();
+    });
+}
+
+function processData(criteria = 'pending') {
+  let tripData = aggregateTripData(criteria);
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayFilteredTrips)({
+    trips: tripData.filteredTrips,
+    destinations: dataStore.getKey('destinations'),
+  });
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displaySelectedFilterOption)(criteria);
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayTotalSpent)(
+    (0,_model__WEBPACK_IMPORTED_MODULE_2__.calcTotalSpentByYear)(
+      _scripts__WEBPACK_IMPORTED_MODULE_1__.userStore.getKey('currentUser').id,
+      dataStore.getKey('trips'),
+      dataStore.getKey('destinations'),
+      '2022', // change to be current year when trips can be approved
+    ),
+  );
+}
+
+// Event Listeners
+window.addEventListener('load', () => {
+  setAndProcessData();
+
+  filterBtns.forEach(btn => {
+    btn.onclick = e => {
+      processData(e.target.id);
+    };
+  });
+});
+
+function aggregateTripData(filterCriteria) {
+  const trips = dataStore.getKey('trips');
+  const userID = _scripts__WEBPACK_IMPORTED_MODULE_1__.userStore.getKey('currentUser').id;
+  const filteredTrips = (0,_model__WEBPACK_IMPORTED_MODULE_2__.filterTrips)(trips, filterCriteria, userID);
+  return {
+    userID,
+    filteredTrips,
+  };
+}
+
+
+/***/ }),
 /* 18 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -1060,113 +1178,12 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   dataStore: () => (/* binding */ dataStore),
-/* harmony export */   setAndProcessData: () => (/* binding */ setAndProcessData)
-/* harmony export */ });
-/* harmony import */ var _stylesheets_partials_trips_trips_base_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(18);
-/* harmony import */ var _scripts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
-/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
-
-
-
-
-
-
-// Query Selectors
-
-// Filter Btns
-
-const filterBtns = document.querySelectorAll('.filter-btn');
-
-function initDataStore() {
-  const store = {
-    apiKey: {
-      base: 'http://localhost:3001/api/v1/',
-      endpoints: {
-        trips: 'trips',
-        destinations: 'destinations',
-      },
-    },
-  };
-
-  return {
-    getAPIKey(endpoint) {
-      const ref = store.apiKey;
-      return `${ref.base}${ref.endpoints[endpoint]}`;
-    },
-
-    getKey(key) {
-      return store[key];
-    },
-
-    setKey(key, value) {
-      store[key] = value;
-    },
-  };
-}
-
-const dataStore = initDataStore();
-setAndProcessData();
-
-function setAndProcessData() {
-  (0,_model__WEBPACK_IMPORTED_MODULE_2__.getAllAPIData)()
-    .then(values => {
-      const [travelers, trips, destinations] = values;
-      dataStore.setKey('trips', trips.trips);
-      dataStore.setKey('destinations', destinations.destinations);
-    })
-    .then(() => {
-      processData();
-    });
-}
-
-function processData(criteria = 'past') {
-  let tripData = aggregateTripData(criteria);
-  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayFilteredTrips)({
-    trips: tripData.filteredTrips,
-    destinations: dataStore.getKey('destinations'),
-  });
-  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displaySelectedFilterOption)(criteria);
-  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayTotalSpent)(
-    (0,_model__WEBPACK_IMPORTED_MODULE_2__.calcTotalSpentByYear)(
-      _scripts__WEBPACK_IMPORTED_MODULE_1__.userStore.getKey('currentUser').id,
-      dataStore.getKey('trips'),
-      dataStore.getKey('destinations'),
-      '2022', // change to be current year when trips can be approved
-    ),
-  );
-}
-
-// Event Listeners
-window.addEventListener('load', () => {
-  setAndProcessData();
-
-  filterBtns.forEach(btn => {
-    btn.onclick = e => {
-      processData(e.target.id);
-    };
-  });
-});
-
-function aggregateTripData(filterCriteria) {
-  const trips = dataStore.getKey('trips');
-  const userID = _scripts__WEBPACK_IMPORTED_MODULE_1__.userStore.getKey('currentUser').id;
-  const filteredTrips = (0,_model__WEBPACK_IMPORTED_MODULE_2__.filterTrips)(trips, filterCriteria, userID);
-  return {
-    userID,
-    filteredTrips,
-  };
-}
-
-})();
-
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__(17);
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=trips.bundle.js.map

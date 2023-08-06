@@ -52,6 +52,7 @@ function initUserStore() {
 function setAndProcessUserData() {
   (0,_apiCalls__WEBPACK_IMPORTED_MODULE_2__.getAPIData)('http://localhost:3001/api/v1/travelers').then(data => {
     userStore.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_3__.getRandomTraveler)(data.travelers));
+    console.log(userStore.getKey('currentUser').id);
   });
 }
 
@@ -656,6 +657,7 @@ function postFlightRequest(
         );
       }
     })
+    .then(data => data)
     .catch(err => console.error(err));
 }
 
@@ -751,13 +753,14 @@ function calcTotalCostOfTrip(trip, destination) {
 }
 
 function calcTimeDifference(date1, date2) {
-  date1 = date1.split('-');
-  date2 = date2.split('-');
-  date1 = new Date(`${date1[1]}/${date1[2]}/${date1[0]}`)
-  date2 = new Date(`${date2[1]}/${date2[2]}/${date2[0]}`)
-  
+  console.log(date1);
+  const splitDate1 = date1.split('-');
+  const splitDate2 = date2.split('-');
+  date1 = new Date(`${splitDate1[1]}/${splitDate1[2]}/${splitDate1[0]}`);
+  date2 = new Date(`${splitDate2[1]}/${splitDate2[2]}/${splitDate2[0]}`);
+
   const diffInMs = Math.abs(date1 - date2);
-  
+
   return diffInMs / (1000 * 60 * 60 * 24);
 }
 
@@ -788,7 +791,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// Query Selectors
+// Event Listeners
 
 window.onload = () => {
   fetch('http://localhost:3001/api/v1/destinations')
@@ -804,20 +807,29 @@ window.onload = () => {
     });
 };
 
-function packageFormDataForAPI(form) {
-  const formData = new FormData(form);
-  const formattedFormData = [...formData.entries()].reduce((acc, input) => {
-    input[0] === 'end-date'
-      ? (acc.duration = (0,_model__WEBPACK_IMPORTED_MODULE_1__.calcTimeDifference)(input[1], acc['start-date']))
-      : (acc[input[0]] = input[1]);
+// Functions
 
+function packageFormDataForAPI(form, destinations) {
+  const formData = new FormData(form);
+
+  return [...formData.entries()].reduce((acc, input) => {
+    switch (input[0]) {
+      case 'destination':
+        acc.destID = (0,_model__WEBPACK_IMPORTED_MODULE_1__.findIDByDestination)(destinations, input[1]);
+        break;
+      case 'start-date':
+        acc.startDate = input[1].replaceAll('-', '/');
+        break;
+      case 'end-date':
+        acc.duration = (0,_model__WEBPACK_IMPORTED_MODULE_1__.calcTimeDifference)(acc.startDate, input[1]);
+        break;
+      default:
+        acc[input[0]] = input[1];
+        break;
+    }
     return acc;
   }, {});
-  console.log(formattedFormData);
-  return formattedFormData;
 }
-
-// destID, pax, startdate, duration
 
 
 /***/ }),
@@ -830,12 +842,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   displayFilteredTrips: () => (/* binding */ displayFilteredTrips),
 /* harmony export */   displaySelectedFilterOption: () => (/* binding */ displaySelectedFilterOption),
 /* harmony export */   displayTotalSpent: () => (/* binding */ displayTotalSpent),
+/* harmony export */   navigateToPending: () => (/* binding */ navigateToPending),
 /* harmony export */   openDropdownOnEnterKeyPress: () => (/* binding */ openDropdownOnEnterKeyPress),
 /* harmony export */   renderAllDestinationOptions: () => (/* binding */ renderAllDestinationOptions),
 /* harmony export */   setMinDateOption: () => (/* binding */ setMinDateOption)
 /* harmony export */ });
 /* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
-/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
+/* harmony import */ var _trips_trips__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17);
+/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16);
+
 
 
 
@@ -848,7 +863,7 @@ function displayFilteredTrips(tripData) {
       tripData.destinations,
       trip.destinationID,
     );
-    resultsEl.appendChild(new _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__.TripCard(trip, destination));
+    resultsEl.appendChild(new _trips_trips_card__WEBPACK_IMPORTED_MODULE_2__.TripCard(trip, destination));
   });
 }
 
@@ -919,6 +934,13 @@ function setMinDateOption() {
 
 // validate for if input is present in destinations array
 
+function navigateToPending() {
+  window.location.href = 'trips.html';
+  console.log(document.querySelector('#pending'));
+  document.querySelector('#pending').click();
+  (0,_trips_trips__WEBPACK_IMPORTED_MODULE_1__.setAndProcessData)();
+
+}
 
 /***/ }),
 /* 16 */
@@ -963,6 +985,178 @@ function TripCard(trip, destination) {
 }
 
 
+
+/***/ }),
+/* 17 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   dataStore: () => (/* binding */ dataStore),
+/* harmony export */   setAndProcessData: () => (/* binding */ setAndProcessData)
+/* harmony export */ });
+/* harmony import */ var _stylesheets_partials_trips_trips_base_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(18);
+/* harmony import */ var _scripts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(0);
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
+/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
+
+
+
+
+
+
+// Query Selectors
+
+// Filter Btns
+
+const filterBtns = document.querySelectorAll('.filter-btn');
+
+function initDataStore() {
+  const store = {
+    apiKey: {
+      base: 'http://localhost:3001/api/v1/',
+      endpoints: {
+        trips: 'trips',
+        destinations: 'destinations',
+      },
+    },
+  };
+
+  return {
+    getAPIKey(endpoint) {
+      const ref = store.apiKey;
+      return `${ref.base}${ref.endpoints[endpoint]}`;
+    },
+
+    getKey(key) {
+      return store[key];
+    },
+
+    setKey(key, value) {
+      store[key] = value;
+    },
+  };
+}
+
+const dataStore = initDataStore();
+
+function setAndProcessData() {
+  (0,_model__WEBPACK_IMPORTED_MODULE_2__.getAllAPIData)()
+    .then(values => {
+      const [travelers, trips, destinations] = values;
+      dataStore.setKey('trips', trips.trips);
+      dataStore.setKey('destinations', destinations.destinations);
+    })
+    .then(() => {
+      processData();
+    });
+}
+
+function processData(criteria = 'pending') {
+  let tripData = aggregateTripData(criteria);
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayFilteredTrips)({
+    trips: tripData.filteredTrips,
+    destinations: dataStore.getKey('destinations'),
+  });
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displaySelectedFilterOption)(criteria);
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayTotalSpent)(
+    (0,_model__WEBPACK_IMPORTED_MODULE_2__.calcTotalSpentByYear)(
+      _scripts__WEBPACK_IMPORTED_MODULE_1__.userStore.getKey('currentUser').id,
+      dataStore.getKey('trips'),
+      dataStore.getKey('destinations'),
+      '2022', // change to be current year when trips can be approved
+    ),
+  );
+}
+
+// Event Listeners
+window.addEventListener('load', () => {
+  setAndProcessData();
+
+  filterBtns.forEach(btn => {
+    btn.onclick = e => {
+      processData(e.target.id);
+    };
+  });
+});
+
+function aggregateTripData(filterCriteria) {
+  const trips = dataStore.getKey('trips');
+  const userID = _scripts__WEBPACK_IMPORTED_MODULE_1__.userStore.getKey('currentUser').id;
+  const filteredTrips = (0,_model__WEBPACK_IMPORTED_MODULE_2__.filterTrips)(trips, filterCriteria, userID);
+  return {
+    userID,
+    filteredTrips,
+  };
+}
+
+
+/***/ }),
+/* 18 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_resolve_url_loader_index_js_node_modules_sass_loader_dist_cjs_js_ruleSet_1_rules_0_use_3_trips_base_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(19);
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_resolve_url_loader_index_js_node_modules_sass_loader_dist_cjs_js_ruleSet_1_rules_0_use_3_trips_base_scss__WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_resolve_url_loader_index_js_node_modules_sass_loader_dist_cjs_js_ruleSet_1_rules_0_use_3_trips_base_scss__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+/* 19 */
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _trips_bg_jpg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(20);
+// Imports
+
+
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_cssWithMappingToString_js__WEBPACK_IMPORTED_MODULE_0___default()));
+var ___CSS_LOADER_URL_REPLACEMENT_0___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(_trips_bg_jpg__WEBPACK_IMPORTED_MODULE_3__["default"]);
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */\n/* Document\n   ========================================================================== */\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in iOS.\n */\nhtml {\n  line-height: 1.15; /* 1 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/* Sections\n   ========================================================================== */\n/**\n * Remove the margin in all browsers.\n */\nbody {\n  margin: 0;\n}\n\n/**\n * Render the `main` element consistently in IE.\n */\nmain {\n  display: block;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/* Grouping content\n   ========================================================================== */\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\npre {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * Remove the gray background on active links in IE 10.\n */\na {\n  background-color: transparent;\n}\n\n/**\n * 1. Remove the bottom border in Chrome 57-\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct font size in all browsers.\n */\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Remove the border on images inside links in IE 10.\n */\nimg {\n  border-style: none;\n}\n\n/* Forms\n   ========================================================================== */\n/**\n * 1. Change the font styles in all browsers.\n * 2. Remove the margin in Firefox and Safari.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit; /* 1 */\n  font-size: 100%; /* 1 */\n  line-height: 1.15; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * Correct the inability to style clickable types in iOS and Safari.\n */\nbutton,\n[type=button],\n[type=reset],\n[type=submit] {\n  -webkit-appearance: button;\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\nbutton::-moz-focus-inner,\n[type=button]::-moz-focus-inner,\n[type=reset]::-moz-focus-inner,\n[type=submit]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\nbutton:-moz-focusring,\n[type=button]:-moz-focusring,\n[type=reset]:-moz-focusring,\n[type=submit]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Correct the padding in Firefox.\n */\nfieldset {\n  padding: 0.35em 0.75em 0.625em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\nprogress {\n  vertical-align: baseline;\n}\n\n/**\n * Remove the default vertical scrollbar in IE 10+.\n */\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10.\n * 2. Remove the padding in IE 10.\n */\n[type=checkbox],\n[type=radio] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n[type=number]::-webkit-inner-spin-button,\n[type=number]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n[type=search] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding in Chrome and Safari on macOS.\n */\n[type=search]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/* Interactive\n   ========================================================================== */\n/*\n * Add the correct display in Edge, IE 10+, and Firefox.\n */\ndetails {\n  display: block;\n}\n\n/*\n * Add the correct display in all browsers.\n */\nsummary {\n  display: list-item;\n}\n\n/* Misc\n   ========================================================================== */\n/**\n * Add the correct display in IE 10+.\n */\ntemplate {\n  display: none;\n}\n\n/**\n * Add the correct display in IE 10.\n */\n[hidden] {\n  display: none;\n}\n\n* {\n  color: #e9e9e9;\n  font-family: Verdana, Geneva, Tahoma, sans-serif;\n  font-size: 1.2rem;\n}\n\n* {\n  box-sizing: border-box;\n}\n\nbody {\n  height: 100vh;\n  width: 100vw;\n}\n\n.trip-card {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  justify-content: start;\n  margin-top: 30px;\n  height: 200px;\n  width: 100%;\n  background: #041f1e;\n  border: 1px solid #fab02b;\n  border-radius: 10px;\n}\n.trip-card h2 {\n  color: #fab02b;\n}\n\n.img-container {\n  height: 100%;\n  width: 40%;\n}\n.img-container img {\n  padding: 15px;\n  height: 100%;\n  width: 100%;\n  border-radius: 20px;\n}\n\nbody {\n  background: #6ea4bf;\n  /* Hide Scroll Bar Across Browsers */\n  -ms-overflow-style: none; /* IE and Edge */\n  scrollbar-width: none; /* Firefox */\n  /* Chrome, Safari and Opera */\n}\nbody::-webkit-scrollbar {\n  display: none;\n}\n\n.trips-page-bg-img-container {\n  position: fixed;\n  top: 0;\n  left: 0;\n  height: 60%;\n  width: 100%;\n  background: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ") no-repeat center;\n  -webkit-background-size: cover;\n  -moz-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n  z-index: -1;\n}\n\n.trips-main {\n  background-color: #6ea4bf;\n  position: relative;\n  top: 40%;\n  width: 100%;\n  border-top-left-radius: 25px;\n  border-top-right-radius: 25px;\n  overflow: hidden;\n}\n\n.upper-main {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  justify-content: space-between;\n  width: 100%;\n  padding: 0 2%;\n}\n.upper-main .filter-btn-container button {\n  border: none;\n  background-color: transparent;\n  padding: 10px;\n  cursor: pointer;\n}\n.upper-main .filter-btn-container button.selected,\n.upper-main .filter-btn-container button:hover {\n  border: none;\n  border-bottom: 2px solid #fab02b;\n  border-radius: 8px;\n}\n\n.lower-main {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  padding: 2rem;\n}\n\n.selected {\n  border: none;\n  border-bottom: 2px solid #e9e9e9;\n  border-radius: 15px;\n}", "",{"version":3,"sources":["webpack://./node_modules/normalize.css/normalize.css","webpack://./src/stylesheets/partials/trips/_trips-base.scss","webpack://./src/stylesheets/modules/_typography.scss","webpack://./src/stylesheets/modules/_colors.scss","webpack://./src/stylesheets/partials/_base.scss","webpack://./src/stylesheets/partials/trips/_trips-card.scss","webpack://./src/stylesheets/modules/_util.scss"],"names":[],"mappings":"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","sourcesContent":["/*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */\n\n/* Document\n   ========================================================================== */\n\n/**\n * 1. Correct the line height in all browsers.\n * 2. Prevent adjustments of font size after orientation changes in iOS.\n */\n\nhtml {\n  line-height: 1.15; /* 1 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/* Sections\n   ========================================================================== */\n\n/**\n * Remove the margin in all browsers.\n */\n\nbody {\n  margin: 0;\n}\n\n/**\n * Render the `main` element consistently in IE.\n */\n\nmain {\n  display: block;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\n\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\npre {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * Remove the gray background on active links in IE 10.\n */\n\na {\n  background-color: transparent;\n}\n\n/**\n * 1. Remove the bottom border in Chrome 57-\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\n\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\ncode,\nkbd,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove the border on images inside links in IE 10.\n */\n\nimg {\n  border-style: none;\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * 1. Change the font styles in all browsers.\n * 2. Remove the margin in Firefox and Safari.\n */\n\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  font-family: inherit; /* 1 */\n  font-size: 100%; /* 1 */\n  line-height: 1.15; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\n\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\n\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * Correct the inability to style clickable types in iOS and Safari.\n */\n\nbutton,\n[type=\"button\"],\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button;\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\n\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\n\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Correct the padding in Firefox.\n */\n\nfieldset {\n  padding: 0.35em 0.75em 0.625em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\n\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\n\nprogress {\n  vertical-align: baseline;\n}\n\n/**\n * Remove the default vertical scrollbar in IE 10+.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10.\n * 2. Remove the padding in IE 10.\n */\n\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n\n[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding in Chrome and Safari on macOS.\n */\n\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n\n/* Interactive\n   ========================================================================== */\n\n/*\n * Add the correct display in Edge, IE 10+, and Firefox.\n */\n\ndetails {\n  display: block;\n}\n\n/*\n * Add the correct display in all browsers.\n */\n\nsummary {\n  display: list-item;\n}\n\n/* Misc\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 10+.\n */\n\ntemplate {\n  display: none;\n}\n\n/**\n * Add the correct display in IE 10.\n */\n\n[hidden] {\n  display: none;\n}\n","@import '../base';\n@import './trips-card';\n\nbody {\n  background: $brand-color-5;\n\n  /* Hide Scroll Bar Across Browsers */\n  -ms-overflow-style: none; /* IE and Edge */\n  scrollbar-width: none; /* Firefox */\n  /* Chrome, Safari and Opera */\n  &::-webkit-scrollbar {\n    display: none;\n  }\n}\n\n.trips-page-bg-img-container {\n  position: fixed;\n  top: 0;\n  left: 0;\n  height: 60%;\n  width: 100%;\n\n  background: url('./trips-bg.jpg') no-repeat center;\n  -webkit-background-size: cover;\n  -moz-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n\n  z-index: -1;\n}\n\n.trips-main {\n  background-color: $brand-color-5;\n\n  position: relative;\n  top: 40%;\n\n  width: 100%;\n\n  border-top: {\n    left-radius: 25px;\n    right-radius: 25px;\n  }\n\n  overflow: hidden;\n}\n\n.upper-main {\n  @include centered-flex-container;\n  justify-content: space-between;\n  width: 100%;\n  padding: 0 2%;\n\n  .filter-btn-container {\n    button {\n      border: none;\n      background-color: transparent;\n      padding: 10px;\n\n      cursor: pointer;\n    }\n\n    button.selected,\n    button:hover {\n      border: none {\n        bottom: 2px solid $brand-color-1;\n        radius: 8px;\n      }\n    }\n  }\n}\n\n.lower-main {\n  @include vertical-centered-flex-container;\n\n  width: 100%;\n  padding: 2rem;\n}\n\n.selected {\n  border: none {\n    bottom: 2px solid $primary-font-color;\n    radius: 15px;\n  }\n}\n","@import './colors';\n\n// Base Font\n$base-font-family: Verdana, Geneva, Tahoma, sans-serif;\n\n// Font Sizes\n$base-font-size: 1.2rem;\n\n* {\n  color: $primary-font-color;\n  font: {\n    family: $base-font-family;\n    size: $base-font-size;\n  }\n}","// Font Colors\n\n$primary-font-color: #e9e9e9;\n$secondary-font-color: #fab02b;\n\n// Brand Colors\n\n$brand-color-1: #fab02b;\n$brand-color-2: #3f6064;\n$brand-color-3: #041f1e;\n$brand-color-4: #8d5b4c;\n$brand-color-5: #6ea4bf;\n","@import '../../../node_modules/normalize.css/normalize';\n\n@import '../modules/all';\n@import '../modules/typography';\n\n* {\n  box-sizing: border-box;\n}\n\nbody {\n  height: 100vh;\n  width: 100vw;\n}",".trip-card {\n  @include centered-flex-container;\n  justify-content: start;\n  \n  margin-top: 30px;\n  height: 200px;\n  width: 100%;\n\n  background: $brand-color-3;\n  border: 1px solid $brand-color-1 {\n    radius: 10px;\n  };\n  \n  h2 {\n    color: $secondary-font-color;\n  }\n}\n\n.img-container {\n  height: 100%;\n  width: 40%;\n  \n  \n  img {\n    padding: 15px;\n    height: 100%;\n    width: 100%;\n    border-radius: 20px;\n  }\n}","@mixin centered-flex-container {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n@mixin vertical-centered-flex-container {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n}"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+/* 20 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("images/trips-bg.jpg");
 
 /***/ })
 /******/ 	]);
@@ -1044,9 +1238,13 @@ var __webpack_exports__ = {};
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
-/* harmony import */ var _scripts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(0);
-/* harmony import */ var _form__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(14);
+/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
+/* harmony import */ var _scripts__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(0);
+/* harmony import */ var _trips_trips__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(17);
+/* harmony import */ var _form__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(14);
+
+
 
 
 
@@ -1060,19 +1258,25 @@ const requestForm = document.querySelector('#request-form');
 requestForm.onsubmit = e => {
   e.preventDefault();
 
-  const requestData = (0,_form__WEBPACK_IMPORTED_MODULE_3__.packageFormDataForAPI)(requestForm);
-  console.log(requestData);
-  (0,_model__WEBPACK_IMPORTED_MODULE_1__.getAllAPIData)().then(apiData => {
+  (0,_model__WEBPACK_IMPORTED_MODULE_2__.getAllAPIData)().then(apiData => {
     const [travelers, trips, destinations] = apiData;
+    const requestData = (0,_form__WEBPACK_IMPORTED_MODULE_5__.packageFormDataForAPI)(
+      requestForm,
+      destinations.destinations,
+    );
+
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.postFlightRequest)(
       'http://localhost:3001/api/v1/trips',
-      trips[trips.length - 1].destinationID,
-      _scripts__WEBPACK_IMPORTED_MODULE_2__.userStore.getKey('currentUser').id,
+      trips.trips[trips.trips.length - 1].id,
+      _scripts__WEBPACK_IMPORTED_MODULE_3__.userStore.getKey('currentUser').id,
       requestData.destID,
       requestData.pax,
       requestData.startDate,
       requestData.duration,
-    );
+    )
+      .then(() => {
+        (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.navigateToPending)();
+      });
   });
 };
 

@@ -598,6 +598,7 @@ function postFlightRequest(
         );
       }
     })
+    .then(data => data)
     .catch(err => console.error(err));
 }
 
@@ -693,13 +694,14 @@ function calcTotalCostOfTrip(trip, destination) {
 }
 
 function calcTimeDifference(date1, date2) {
-  date1 = date1.split('-');
-  date2 = date2.split('-');
-  date1 = new Date(`${date1[1]}/${date1[2]}/${date1[0]}`)
-  date2 = new Date(`${date2[1]}/${date2[2]}/${date2[0]}`)
-  
+  console.log(date1);
+  const splitDate1 = date1.split('-');
+  const splitDate2 = date2.split('-');
+  date1 = new Date(`${splitDate1[1]}/${splitDate1[2]}/${splitDate1[0]}`);
+  date2 = new Date(`${splitDate2[1]}/${splitDate2[2]}/${splitDate2[0]}`);
+
   const diffInMs = Math.abs(date1 - date2);
-  
+
   return diffInMs / (1000 * 60 * 60 * 24);
 }
 
@@ -840,6 +842,7 @@ function initUserStore() {
 function setAndProcessUserData() {
   (0,_apiCalls__WEBPACK_IMPORTED_MODULE_2__.getAPIData)('http://localhost:3001/api/v1/travelers').then(data => {
     userStore.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_3__.getRandomTraveler)(data.travelers));
+    console.log(userStore.getKey('currentUser').id);
   });
 }
 

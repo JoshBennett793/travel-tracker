@@ -5,7 +5,7 @@ import {
 } from '../domManipulation';
 import { calcTimeDifference, findIDByDestination } from '../model';
 
-// Query Selectors
+// Event Listeners
 
 window.onload = () => {
   fetch('http://localhost:3001/api/v1/destinations')
@@ -21,17 +21,26 @@ window.onload = () => {
     });
 };
 
-export function packageFormDataForAPI(form) {
-  const formData = new FormData(form);
-  const formattedFormData = [...formData.entries()].reduce((acc, input) => {
-    input[0] === 'end-date'
-      ? (acc.duration = calcTimeDifference(input[1], acc['start-date']))
-      : (acc[input[0]] = input[1]);
+// Functions
 
+export function packageFormDataForAPI(form, destinations) {
+  const formData = new FormData(form);
+
+  return [...formData.entries()].reduce((acc, input) => {
+    switch (input[0]) {
+      case 'destination':
+        acc.destID = findIDByDestination(destinations, input[1]);
+        break;
+      case 'start-date':
+        acc.startDate = input[1].replaceAll('-', '/');
+        break;
+      case 'end-date':
+        acc.duration = calcTimeDifference(acc.startDate, input[1]);
+        break;
+      default:
+        acc[input[0]] = input[1];
+        break;
+    }
     return acc;
   }, {});
-  console.log(formattedFormData);
-  return formattedFormData;
 }
-
-// destID, pax, startdate, duration

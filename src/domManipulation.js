@@ -1,4 +1,5 @@
 import { findDestinationByID } from './model';
+import { setAndProcessData } from './trips/trips';
 import { TripCard } from './trips/trips-card';
 
 export function displayFilteredTrips(tripData) {
@@ -80,3 +81,11 @@ export function setMinDateOption() {
 }
 
 // validate for if input is present in destinations array
+
+export function navigateToPending() {
+  window.location.href = 'trips.html';
+  console.log(document.querySelector('#pending'));
+  document.querySelector('#pending').click();
+  setAndProcessData();
+
+}
