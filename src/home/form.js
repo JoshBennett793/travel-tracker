@@ -1,4 +1,8 @@
-import { renderAllDestinationOptions } from '../domManipulation';
+import {
+  openDropdownOnEnterKeyPress,
+  renderAllDestinationOptions,
+  setMinDateOption,
+} from '../domManipulation';
 
 window.onload = () => {
   fetch('http://localhost:3001/api/v1/destinations')
@@ -9,6 +13,7 @@ window.onload = () => {
     })
     .then(data => {
       renderAllDestinationOptions(data.destinations);
+      openDropdownOnEnterKeyPress();
+      setMinDateOption();
     });
 };
-

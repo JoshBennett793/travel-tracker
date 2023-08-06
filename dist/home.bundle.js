@@ -10,7 +10,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   displayFilteredTrips: () => (/* binding */ displayFilteredTrips),
 /* harmony export */   displaySelectedFilterOption: () => (/* binding */ displaySelectedFilterOption),
 /* harmony export */   displayTotalSpent: () => (/* binding */ displayTotalSpent),
-/* harmony export */   renderAllDestinationOptions: () => (/* binding */ renderAllDestinationOptions)
+/* harmony export */   openDropdownOnEnterKeyPress: () => (/* binding */ openDropdownOnEnterKeyPress),
+/* harmony export */   renderAllDestinationOptions: () => (/* binding */ renderAllDestinationOptions),
+/* harmony export */   setMinDateOption: () => (/* binding */ setMinDateOption)
 /* harmony export */ });
 /* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
 /* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18);
@@ -48,8 +50,9 @@ function displayTotalSpent(total) {
 }
 
 // Trip Request Form Inputs
-const requestFormDestinationInput = document.querySelector('input#destination');
+const requestFormDestinationInput = document.querySelector('#destination');
 const dropdownOpts = document.querySelector('.dropdown-options');
+const dateInputs = document.querySelectorAll('input[type="date"]')
 
 function renderAllDestinationOptions(destinations) {
   dropdownOpts.innerHTML = '';
@@ -62,28 +65,38 @@ function FormOption(destination) {
   const destOption = document.createElement('p');
   destOption.innerText = destination.destination;
   destOption.setAttribute('tabindex', 0);
-  
+
   destOption.onclick = () => {
     requestFormDestinationInput.value = destOption.innerText;
-  }
+  };
 
   destOption.onkeypress = e => {
     if (e.key === 'Enter' || e.keyCode === 13) {
       e.target.click();
+      dateInputs[0].focus();
+      dropdownOpts.style.display = 'none';
     }
-  }
-  
+  };
+
   return destOption;
 }
-
-requestFormDestinationInput.onkeypress = e => {
-  if (e.key === 'Enter' || e.keyCode === 13) {
-    dropdownOpts.style.display = 'block';
-  }
+function openDropdownOnEnterKeyPress() {
+  requestFormDestinationInput.onkeypress = e => {
+    e.preventDefault();
+    if (e.key === 'Enter' || e.keyCode === 13) {
+      dropdownOpts.style.display = 'block';
+    }
+  };
 }
 
+function setMinDateOption() {
+  dateInputs.forEach(input => {
+    input.min = new Date().toISOString().split('T')[0];
+  })
+}
 
 // validate for if input is present in destinations array
+
 
 /***/ }),
 
@@ -103,9 +116,10 @@ window.onload = () => {
     })
     .then(data => {
       (0,_domManipulation__WEBPACK_IMPORTED_MODULE_0__.renderAllDestinationOptions)(data.destinations);
+      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_0__.openDropdownOnEnterKeyPress)();
+      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_0__.setMinDateOption)();
     });
 };
-
 
 
 /***/ }),

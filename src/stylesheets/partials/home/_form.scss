@@ -5,12 +5,12 @@
   width: 75%;
   margin: 5vh auto;
 
-  border: 1px solid green;
-
   #request-form {
     @include centered-flex-container;
     width: 100%;
     padding: 10px;
+
+    gap: 10px;
   }
 }
 
@@ -31,27 +31,24 @@
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.4);
+
+  p {
+    display: block;
+    color: #000000;
+    padding: 5px;
+    text-decoration: none;
+    padding: 20px 40px;
+    cursor: pointer;
+
+    &:hover {
+      color: #0a0a23;
+      background-color: #ddd;
+      border-radius: 5px;
+    }
+  }
 }
 
-.dropdown-container:hover .dropdown-options {
-  display: block;
-}
-
+.dropdown-container:hover .dropdown-options,
 input#destination:focus .dropdown-options {
   display: block;
-}
-
-.dropdown-options p {
-  display: block;
-  color: #000000;
-  padding: 5px;
-  text-decoration: none;
-  padding: 20px 40px;
-  cursor: pointer;
-}
-
-.dropdown-options p:hover {
-  color: #0a0a23;
-  background-color: #ddd;
-  border-radius: 5px;
 }
