@@ -8,7 +8,7 @@ export function displayFilteredTrips(tripData) {
   tripData.trips.forEach(trip => {
     const destination = findDestinationByID(
       tripData.destinations,
-      trip.destinationID
+      trip.destinationID,
     );
     resultsEl.appendChild(new TripCard(trip, destination));
   });
@@ -30,3 +30,28 @@ export function displayTotalSpent(total) {
   const totalSpentEl = document.querySelector('.total-spent-value');
   totalSpentEl.innerText = total.toLocaleString('en-US');
 }
+
+// Trip Request Form Inputs
+
+export function renderAllDestinationOptions(destinations) {
+  const dropdownOpts = document.querySelector('.dropdown-options');
+  dropdownOpts.innerHTML = '';
+  destinations.forEach(dest => {
+    dropdownOpts.appendChild(new FormOption(dest));
+
+  });
+}
+
+function FormOption(destination) {
+  const destOption = document.createElement('p');
+  destOption.innerText = destination.destination;
+
+  destOption.onclick = () => {
+    const destInput = document.querySelector('input#destination');
+    destInput.value = destOption.innerText;
+  }
+
+  return destOption;
+}
+
+// validate for if input is present in destinations array

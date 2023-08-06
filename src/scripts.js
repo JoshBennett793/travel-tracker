@@ -1,4 +1,5 @@
 import './stylesheets/index.scss';
+import './header/header';
 
 import { getAPIData } from './apiCalls';
 import { getRandomTraveler } from './model';
