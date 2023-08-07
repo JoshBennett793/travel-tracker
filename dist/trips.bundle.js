@@ -919,7 +919,7 @@ function navigateToPending() {
   window.location.href = 'trips.html';
 }
 
-/* -------------- Trips -------------- */
+/* -------------- Confirmation Page -------------- */
 
 function toggleConfirmationPage() {
   const confPage = document.querySelector('.confirmation-page-container');

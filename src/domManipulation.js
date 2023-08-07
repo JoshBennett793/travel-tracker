@@ -113,7 +113,7 @@ export function navigateToPending() {
   window.location.href = 'trips.html';
 }
 
-/* -------------- Trips -------------- */
+/* -------------- Confirmation Page -------------- */
 
 export function toggleConfirmationPage() {
   const confPage = document.querySelector('.confirmation-page-container');

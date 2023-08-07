@@ -992,7 +992,7 @@ function navigateToPending() {
   window.location.href = 'trips.html';
 }
 
-/* -------------- Trips -------------- */
+/* -------------- Confirmation Page -------------- */
 
 function toggleConfirmationPage() {
   const confPage = document.querySelector('.confirmation-page-container');
@@ -1176,39 +1176,57 @@ const requestForm = document.querySelector('#request-form');
 
 requestForm.onsubmit = e => {
   e.preventDefault();
-
-  (0,_model__WEBPACK_IMPORTED_MODULE_2__.getAllAPIData)().then(apiData => {
-    const [trips, destinations] = apiData;
-    const requestData = (0,_form__WEBPACK_IMPORTED_MODULE_4__.packageFormDataForAPI)(
-      requestForm,
-      destinations.destinations,
-    );
-
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.postFlightRequest)(
-      'http://localhost:3001/api/v1/trips',
-      trips.trips[trips.trips.length - 1].id,
-      _scripts__WEBPACK_IMPORTED_MODULE_3__.userStore.getKey('currentUserID'),
-      requestData.destID,
-      requestData.pax,
-      requestData.startDate,
-      requestData.duration,
-    )
-      .then(resp => {
-        console.log(resp);
-        if (resp.message) {
-          (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.navigateToPending)();
-        } else {
-          throw new Error(
-            'The destination you wish to travel to is not within our travel network. Please select from our dropdown list of destinations.',
-          );
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.displayError)(err);
-      });
-  });
+  confirmRequestWithUser();
 };
+
+function confirmRequestWithUser() {
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
+
+  const confirmBtn = document.querySelector('.confirm-trip-request');
+  const cancelBtn = document.querySelector('.cancel-trip-request');
+  
+  // Confirm Button Event Listener
+  confirmBtn.onclick = () => {
+    (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
+    (0,_model__WEBPACK_IMPORTED_MODULE_2__.getAllAPIData)().then(apiData => {
+      const [trips, destinations] = apiData;
+      const requestData = (0,_form__WEBPACK_IMPORTED_MODULE_4__.packageFormDataForAPI)(
+        requestForm,
+        destinations.destinations,
+      );
+
+      (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.postFlightRequest)(
+        'http://localhost:3001/api/v1/trips',
+        trips.trips[trips.trips.length - 1].id,
+        _scripts__WEBPACK_IMPORTED_MODULE_3__.userStore.getKey('currentUserID'),
+        requestData.destID,
+        requestData.pax,
+        requestData.startDate,
+        requestData.duration,
+      )
+        .then(resp => {
+          console.log(resp);
+          if (resp.message) {
+            (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.navigateToPending)();
+          } else {
+            throw new Error(
+              'The destination you wish to travel to is not within our travel network. Please select from our dropdown list of destinations.',
+            );
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.displayError)(err);
+        });
+    });
+  };
+
+  // Cancel Button Event Listener
+  cancelBtn.onclick = () => {
+    console.log('cancelling request...');
+    (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
+  }
+}
 
 })();
 
