@@ -1,5 +1,5 @@
 import { getAPIData, postFlightRequest } from '../apiCalls';
-import { navigateToPending } from '../domManipulation';
+import { displayError, navigateToPending } from '../domManipulation';
 import { getAllAPIData } from '../model';
 import { userStore } from '../scripts';
 import { setAndProcessData } from '../trips/trips';
@@ -29,9 +29,16 @@ requestForm.onsubmit = e => {
       requestData.startDate,
       requestData.duration,
     )
-      .then(() => {
-        navigateToPending();
+      .then(resp => {
+        console.log(resp);
+        if (resp.message) {
+          navigateToPending();
+        } else {
+          throw new Error('An error occurred during the POST request process.');
+        }
+      })
+      .catch(err => {
+        console.error(err);
       });
   });
 };
-

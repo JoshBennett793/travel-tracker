@@ -1,5 +1,4 @@
-import { findDestinationByID } from './model';
-import { setAndProcessData } from './trips/trips';
+import { findDestinationByID, getDestinationNames } from './model';
 import { TripCard } from './trips/trips-card';
 
 export function displayFilteredTrips(tripData) {
@@ -88,7 +87,44 @@ export function setMinDateOption() {
   });
 }
 
+export function displayError(err) {
+  const errMsg = document.querySelector('.error-message');
+  errMsg.innerText = err;
+}
+
 // validate for if input is present in destinations array
+
+// export function validateDestinationInput(destinations, value) {
+//   const destinationNames = getDestinationNames(destinations);
+//   if (
+//     destinationNames.includes(dest =>
+//       dest.every(letter => letter === value[dest.indexOf(letter)]),
+//     )
+//   ) {
+//     console.log("it's valid");
+//     requestFormDestinationInput.setCustomValidity('Valid field.');
+//   } else {
+//     console.log("it's invalid");
+//     requestFormDestinationInput.setCustomValidity('Invalid field.');
+//     console.log('valid? ', requestFormDestinationInput.validity.valid);
+//   }
+// }
+
+export function InputValidator(destinations) {
+  const destinationNames = getDestinationNames(destinations);
+
+  return {
+    validateDestinationInput(value) {
+      if (destinationNames.includes(value)) {
+        // set field to valid
+        requestFormDestinationInput.setCustomValidity('');
+      } else {
+        // set field to invalid
+        requestFormDestinationInput.setCustomValidity('Invalid field.');
+      }
+    },
+  };
+}
 
 export function navigateToPending() {
   window.location.href = 'trips.html';

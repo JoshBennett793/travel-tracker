@@ -36,7 +36,6 @@ function initUserStore() {
 export function setAndProcessUserData() {
   getAPIData('http://localhost:3001/api/v1/travelers').then(data => {
     userStore.setKey('currentUser', getRandomTraveler(data.travelers));
-    console.log(userStore.getKey('currentUser').id);
   });
 }
 

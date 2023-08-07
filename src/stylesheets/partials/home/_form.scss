@@ -72,6 +72,17 @@
     &:valid {
       border: 2px solid lightgreen;
     }
+
+    &:focus:valid {
+      background-color: lightgreen;
+    }
+  }
+
+  #destination {
+    
+    &:focus:invalid {
+      background-color: lightcoral;
+    }
   }
 }
 
@@ -88,4 +99,8 @@
 
     cursor: pointer;
   }
+}
+
+.error-message {
+  color: red;
 }

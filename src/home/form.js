@@ -1,7 +1,9 @@
 import {
+  InputValidator,
   handleFormKeyboardInput,
   renderAllDestinationOptions,
   setMinDateOption,
+  validateDestinationInput,
 } from '../domManipulation';
 import { calcTimeDifference, findIDByDestination } from '../model';
 
@@ -11,6 +13,8 @@ const destinationInput = document.querySelector('#destination');
 
 // Event Listeners
 
+let inputValidator;
+
 window.onload = () => {
   fetch('http://localhost:3001/api/v1/destinations')
     .then(resp => {
@@ -19,19 +23,26 @@ window.onload = () => {
       }
     })
     .then(data => {
+      inputValidator = new InputValidator(data.destinations);
       renderAllDestinationOptions(data.destinations);
       handleFormKeyboardInput();
       setMinDateOption();
       return data;
     })
     .then(data => {
-      destinationInput.onkeyup = () => {
-        renderAllDestinationOptions(data.destinations);
-      };
+      initDestinationInput(data.destinations);
     });
 };
 
 // Functions
+
+function initDestinationInput(destinations) {
+  destinationInput.onkeyup = e => {
+    const inputValue = e.target.value;
+    renderAllDestinationOptions(destinations);
+    inputValidator.validateDestinationInput(inputValue);
+  };
+}
 
 export function packageFormDataForAPI(form, destinations) {
   const formData = new FormData(form);

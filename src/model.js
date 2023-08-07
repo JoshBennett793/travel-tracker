@@ -72,7 +72,6 @@ export function calcTotalCostOfTrip(trip, destination) {
 }
 
 export function calcTimeDifference(date1, date2) {
-  console.log(date1);
   const splitDate1 = date1.split('-');
   const splitDate2 = date2.split('-');
   date1 = new Date(`${splitDate1[1]}/${splitDate1[2]}/${splitDate1[0]}`);
@@ -90,5 +89,14 @@ export function findDestinationByID(destinations, destID) {
 }
 
 export function findIDByDestination(destinations, destName) {
+  const destinationNames = getDestinationNames(destinations);
+  if (!destinationNames.includes(destName)) {
+    return false;
+  }
+  
   return destinations.find(dest => dest.destination === destName).id;
+}
+
+export function getDestinationNames(destinations) {
+  return destinations.map(({ destination }) => destination);
 }
