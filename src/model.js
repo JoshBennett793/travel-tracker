@@ -93,10 +93,16 @@ export function findIDByDestination(destinations, destName) {
   if (!destinationNames.includes(destName)) {
     return false;
   }
-  
+
   return destinations.find(dest => dest.destination === destName).id;
 }
 
 export function getDestinationNames(destinations) {
   return destinations.map(({ destination }) => destination);
+}
+
+export function validateLoginCredentials(username, password) {
+  return username.slice(0, 6) !== 'traveler' && password !== 'travel'
+    ? false
+    : true;
 }
