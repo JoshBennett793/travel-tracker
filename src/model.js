@@ -49,7 +49,6 @@ export function getDestinationNames(destinations) {
 /* -------------- Generic Fetch Call -------------- */
 export function getAllAPIData() {
   return Promise.all([
-    getAPIData('http://localhost:3001/api/v1/travelers'),
     getAPIData('http://localhost:3001/api/v1/trips'),
     getAPIData('http://localhost:3001/api/v1/destinations'),
   ]).then(values => values);

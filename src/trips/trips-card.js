@@ -24,11 +24,13 @@ export function TripCard(trip, destination, criteria) {
   destinationTitle.setAttribute('tabindex', 0);
 
   const lastVisitDate = document.createElement('p');
-  lastVisitDate.innerText = `Last visited: ${trip.date}`;
+
+  lastVisitDate.innerText = `Trip date: ${trip.date}`;
+
   dataContainer.appendChild(lastVisitDate);
   lastVisitDate.setAttribute('tabindex', 0);
 
-  if (criteria) {
+  if (criteria !== 'past') {
     const status = document.createElement('p');
     status.innerText = `Status: ${trip.status}`;
     dataContainer.appendChild(status);

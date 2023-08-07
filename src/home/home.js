@@ -9,11 +9,13 @@ import { packageFormDataForAPI } from './form';
 
 const requestForm = document.querySelector('#request-form');
 
+// Event Listeners
+
 requestForm.onsubmit = e => {
   e.preventDefault();
 
   getAllAPIData().then(apiData => {
-    const [travelers, trips, destinations] = apiData;
+    const [trips, destinations] = apiData;
     const requestData = packageFormDataForAPI(
       requestForm,
       destinations.destinations,

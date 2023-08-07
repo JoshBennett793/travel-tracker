@@ -281,7 +281,6 @@ function getDestinationNames(destinations) {
 /* -------------- Generic Fetch Call -------------- */
 function getAllAPIData() {
   return Promise.all([
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/travelers'),
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/trips'),
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/destinations'),
   ]).then(values => values);
@@ -368,11 +367,13 @@ function TripCard(trip, destination, criteria) {
   destinationTitle.setAttribute('tabindex', 0);
 
   const lastVisitDate = document.createElement('p');
-  lastVisitDate.innerText = `Last visited: ${trip.date}`;
+
+  lastVisitDate.innerText = `Trip date: ${trip.date}`;
+
   dataContainer.appendChild(lastVisitDate);
   lastVisitDate.setAttribute('tabindex', 0);
 
-  if (criteria) {
+  if (criteria !== 'past') {
     const status = document.createElement('p');
     status.innerText = `Status: ${trip.status}`;
     dataContainer.appendChild(status);
