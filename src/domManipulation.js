@@ -33,7 +33,8 @@ export function displayTotalSpent(total) {
   totalSpentContainer.setAttribute('tabindex', 0);
 }
 
-// Trip Request Form Inputs
+/* -------------- Request Form Inputs -------------- */
+
 const requestFormDestinationInput = document.querySelector('#destination');
 const dropdownOpts = document.querySelector('.dropdown-options');
 const dateInputs = document.querySelectorAll('input[type="date"]');
@@ -110,4 +111,11 @@ export function InputValidator(destinations) {
 
 export function navigateToPending() {
   window.location.href = 'trips.html';
+}
+
+/* -------------- Trips -------------- */
+
+export function toggleConfirmationPage() {
+  const confPage = document.querySelector('.confirmation-page-container');
+  confPage.classList.toggle('collapsed');
 }
