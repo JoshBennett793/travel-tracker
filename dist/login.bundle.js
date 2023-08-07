@@ -80,6 +80,140 @@ function postFlightRequest(
 
 /***/ }),
 
+/***/ 15:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   InputValidator: () => (/* binding */ InputValidator),
+/* harmony export */   displayError: () => (/* binding */ displayError),
+/* harmony export */   displayFilteredTrips: () => (/* binding */ displayFilteredTrips),
+/* harmony export */   displaySelectedFilterOption: () => (/* binding */ displaySelectedFilterOption),
+/* harmony export */   displayTotalSpent: () => (/* binding */ displayTotalSpent),
+/* harmony export */   handleFormKeyboardInput: () => (/* binding */ handleFormKeyboardInput),
+/* harmony export */   navigateToPending: () => (/* binding */ navigateToPending),
+/* harmony export */   renderAllDestinationOptions: () => (/* binding */ renderAllDestinationOptions),
+/* harmony export */   setMinDateOption: () => (/* binding */ setMinDateOption)
+/* harmony export */ });
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
+/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
+
+
+
+function displayFilteredTrips(tripData, criteria) {
+  const resultsEl = document.querySelector('.results-container');
+  resultsEl.innerHTML = '';
+
+  tripData.trips.forEach(trip => {
+    const destination = (0,_model__WEBPACK_IMPORTED_MODULE_0__.findDestinationByID)(
+      tripData.destinations,
+      trip.destinationID,
+    );
+    resultsEl.appendChild(new _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__.TripCard(trip, destination, criteria));
+  });
+}
+
+function displaySelectedFilterOption(criteria) {
+  const btns = document.querySelectorAll('.filter-btn');
+
+  btns.forEach(btn => {
+    if (btn.id === criteria) {
+      btn.classList.add('selected');
+    } else {
+      btn.classList.remove('selected');
+    }
+  });
+}
+
+function displayTotalSpent(total) {
+  const totalSpentContainer = document.querySelector('.total-spent');
+  const totalSpentEl = document.querySelector('.total-spent-value');
+  totalSpentEl.innerText = total.toLocaleString('en-US');
+  totalSpentContainer.setAttribute('tabindex', 0);
+}
+
+// Trip Request Form Inputs
+const requestFormDestinationInput = document.querySelector('#destination');
+const dropdownOpts = document.querySelector('.dropdown-options');
+const dateInputs = document.querySelectorAll('input[type="date"]');
+
+function renderAllDestinationOptions(destinations) {
+  dropdownOpts.innerHTML = '';
+  if (requestFormDestinationInput.value) {
+    destinations = destinations.filter(dest =>
+      dest.destination.includes(requestFormDestinationInput.value),
+    );
+  }
+
+  destinations.forEach(dest => {
+    dropdownOpts.appendChild(new FormOption(dest));
+  });
+}
+
+function FormOption(destination) {
+  const destOption = document.createElement('p');
+  destOption.innerText = destination.destination;
+  destOption.setAttribute('tabindex', 0);
+
+  destOption.onclick = () => {
+    requestFormDestinationInput.value = destOption.innerText;
+  };
+
+  destOption.onkeypress = e => {
+    if (e.key === 'Enter' || e.keyCode === 13) {
+      e.target.click();
+      dateInputs[0].focus();
+      dropdownOpts.style.display = 'none';
+    }
+  };
+
+  return destOption;
+}
+function handleFormKeyboardInput() {
+  requestFormDestinationInput.onkeypress = e => {
+    e.preventDefault();
+    if (e.key === 'Enter' || e.keyCode === 13) {
+      dropdownOpts.style.display = 'block';
+    } else {
+      requestFormDestinationInput.value += e.key;
+    }
+  };
+}
+
+function setMinDateOption() {
+  dateInputs.forEach(input => {
+    input.min = new Date().toISOString().split('T')[0];
+  });
+}
+
+function displayError(err) {
+  const errMsg = document.querySelector('.error-message');
+  errMsg.innerText = err;
+}
+
+function InputValidator(destinations) {
+  const destinationNames = (0,_model__WEBPACK_IMPORTED_MODULE_0__.getDestinationNames)(destinations);
+
+  return {
+    validateDestinationInput(value) {
+      if (destinationNames.includes(value)) {
+        // set field to valid
+        requestFormDestinationInput.setCustomValidity('');
+      } else {
+        // set field to invalid
+        requestFormDestinationInput.setCustomValidity('Invalid field.');
+      }
+    },
+  };
+}
+
+function navigateToPending() {
+  window.location.href = 'trips.html';
+}
+
+
+/***/ }),
+
 /***/ 11:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -194,7 +328,57 @@ function calcTimeDifference(date1, date2) {
 /* -------------- Login -------------- */
 
 function validateLoginCredentials(username, password) {
-  return username.slice(0, 8) === 'traveler' && password === 'travel';
+  const regex = '^traveler(?:[1-9]|[1-4][0-9]|50)$';
+  return username.match(regex) && password === 'travel';
+}
+
+
+/***/ }),
+
+/***/ 16:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TripCard: () => (/* binding */ TripCard)
+/* harmony export */ });
+function TripCard(trip, destination, criteria) {
+  const card = document.createElement('article');
+  card.id = trip.id;
+  card.classList.add('trip-card');
+  card.setAttribute('tabindex', 0);
+
+  const imgContainer = document.createElement('div');
+  imgContainer.classList.add('img-container');
+  card.appendChild(imgContainer);
+
+  const destinationImg = document.createElement('img');
+  destinationImg.src = destination.image;
+  destinationImg.alt = destination.alt;
+  imgContainer.appendChild(destinationImg);
+  destinationImg.setAttribute('tabindex', 0);
+
+  const dataContainer = document.createElement('div');
+  dataContainer.classList.add('card-data-container');
+  card.appendChild(dataContainer);
+
+  const destinationTitle = document.createElement('h2');
+  destinationTitle.innerText = destination.destination;
+  dataContainer.appendChild(destinationTitle);
+  destinationTitle.setAttribute('tabindex', 0);
+
+  const lastVisitDate = document.createElement('p');
+  lastVisitDate.innerText = `Last visited: ${trip.date}`;
+  dataContainer.appendChild(lastVisitDate);
+  lastVisitDate.setAttribute('tabindex', 0);
+
+  if (criteria) {
+    const status = document.createElement('p');
+    status.innerText = `Status: ${trip.status}`;
+    dataContainer.appendChild(status);
+  }
+
+  return card;
 }
 
 
@@ -260,12 +444,16 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
+/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15);
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
+
 
 
 // Query Selectors
 
 const loginForm = document.querySelector('#login-form');
+
+// Event Listeners
 
 loginForm.onsubmit = e => {
   e.preventDefault();
@@ -276,7 +464,7 @@ loginForm.onsubmit = e => {
     return acc;
   }, {});
 
-  const loginIsValid = (0,_model__WEBPACK_IMPORTED_MODULE_0__.validateLoginCredentials)(
+  const loginIsValid = (0,_model__WEBPACK_IMPORTED_MODULE_1__.validateLoginCredentials)(
     loginData.username,
     loginData.password,
   );
@@ -284,10 +472,12 @@ loginForm.onsubmit = e => {
   if (loginIsValid) {
     localStorage.setItem('currentUserID', loginData.username.slice(8));
     window.location.href = 'home.html';
+  } else {
+    (0,_domManipulation__WEBPACK_IMPORTED_MODULE_0__.displayError)(
+      'Incorrect username or password. Please double-check and try again or reach out to josh@vantagejets.com for assistance.',
+    );
   }
 };
-
-// use localStorage user id where needed and then it's on to building the confirmation page
 
 })();
 

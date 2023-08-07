@@ -1,8 +1,11 @@
+import { displayError } from '../domManipulation';
 import { validateLoginCredentials } from '../model';
 
 // Query Selectors
 
 const loginForm = document.querySelector('#login-form');
+
+// Event Listeners
 
 loginForm.onsubmit = e => {
   e.preventDefault();
@@ -21,7 +24,9 @@ loginForm.onsubmit = e => {
   if (loginIsValid) {
     localStorage.setItem('currentUserID', loginData.username.slice(8));
     window.location.href = 'home.html';
+  } else {
+    displayError(
+      'Incorrect username or password. Please double-check and try again or reach out to josh@vantagejets.com for assistance.',
+    );
   }
 };
-
-// use localStorage user id where needed and then it's on to building the confirmation page

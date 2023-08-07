@@ -96,5 +96,6 @@ export function calcTimeDifference(date1, date2) {
 /* -------------- Login -------------- */
 
 export function validateLoginCredentials(username, password) {
-  return username.slice(0, 8) === 'traveler' && password === 'travel';
+  const regex = '^traveler(?:[1-9]|[1-4][0-9]|50)$';
+  return username.match(regex) && password === 'travel';
 }
