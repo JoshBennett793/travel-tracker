@@ -102,7 +102,7 @@ export function getDestinationNames(destinations) {
 }
 
 export function validateLoginCredentials(username, password) {
-  return username.slice(0, 6) !== 'traveler' && password !== 'travel'
-    ? false
-    : true;
+  return username.slice(0, 8) === 'traveler' && password === 'travel'
+    ? true
+    : false;
 }
