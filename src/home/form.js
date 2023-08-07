@@ -3,7 +3,6 @@ import {
   handleFormKeyboardInput,
   renderAllDestinationOptions,
   setMinDateOption,
-  validateDestinationInput,
 } from '../domManipulation';
 import { calcTimeDifference, findIDByDestination } from '../model';
 

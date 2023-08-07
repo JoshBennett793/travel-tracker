@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VantageJet</title>
-</head>
-<body>
-  <button class="login-btn">Login</button>
-  <script src="login.bundle.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VantageJet</title>
+  </head>
+  <body>
+    <div class="login-page-bg-img-container"></div>
+    <form action="#" id="login-form">
+      <div class="input-container">
+        <input type="text" name="username" id="username" placeholder=" " required/>
+        <label for="username">Username</label>
+      </div>
+      <div class="input-container">
+        <input type="text" name="password" id="password" placeholder=" " required/>
+        <label for="password">Password</label>
+      </div>
+      <p class="error-message"></p>
+      <button class="login-btn">Login</button>
+    </form>
+
+    <script src="index.bundle.js"></script>
+    <script src="login.bundle.js"></script>
+  </body>
 </html>

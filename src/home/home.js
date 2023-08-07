@@ -1,8 +1,7 @@
-import { getAPIData, postFlightRequest } from '../apiCalls';
+import { postFlightRequest } from '../apiCalls';
 import { displayError, navigateToPending } from '../domManipulation';
 import { getAllAPIData } from '../model';
 import { userStore } from '../scripts';
-import { setAndProcessData } from '../trips/trips';
 import './form';
 import { packageFormDataForAPI } from './form';
 
@@ -23,7 +22,7 @@ requestForm.onsubmit = e => {
     postFlightRequest(
       'http://localhost:3001/api/v1/trips',
       trips.trips[trips.trips.length - 1].id,
-      userStore.getKey('currentUser').id,
+      userStore.getKey('currentUserID'),
       requestData.destID,
       requestData.pax,
       requestData.startDate,
@@ -34,11 +33,14 @@ requestForm.onsubmit = e => {
         if (resp.message) {
           navigateToPending();
         } else {
-          throw new Error('An error occurred during the POST request process.');
+          throw new Error(
+            'The destination you wish to travel to is not within our travel network. Please select from our dropdown list of destinations.',
+          );
         }
       })
       .catch(err => {
         console.error(err);
+        displayError(err);
       });
   });
 };

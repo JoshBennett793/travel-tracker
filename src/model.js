@@ -1,6 +1,6 @@
 import { getAPIData } from './apiCalls';
 
-/* -------------- Util -------------- */
+/* -------------- Trips -------------- */
 
 export function filterTrips(tripData, criteria, travelerID, year = '2023') {
   const date = new Date();
@@ -13,9 +13,7 @@ export function filterTrips(tripData, criteria, travelerID, year = '2023') {
 
   switch (criteria) {
     case 'byYear':
-      return tripData.filter(
-        trip => trip.date.slice(0, 4) === year && trip.status !== 'pending',
-      );
+      return tripData.filter(trip => trip.date.slice(0, 4) === year);
     case 'past':
       return tripData.filter(
         trip => trip.date < currentDate && trip.status !== 'pending',
@@ -31,6 +29,23 @@ export function filterTrips(tripData, criteria, travelerID, year = '2023') {
   }
 }
 
+export function findDestinationByID(destinations, destID) {
+  return destinations.find(dest => dest.id === destID);
+}
+
+export function findIDByDestination(destinations, destName) {
+  const destinationNames = getDestinationNames(destinations);
+  if (!destinationNames.includes(destName)) {
+    return false;
+  }
+
+  return destinations.find(dest => dest.destination === destName).id;
+}
+
+export function getDestinationNames(destinations) {
+  return destinations.map(({ destination }) => destination);
+}
+
 /* -------------- Generic Fetch Call -------------- */
 export function getAllAPIData() {
   return Promise.all([
@@ -38,12 +53,6 @@ export function getAllAPIData() {
     getAPIData('http://localhost:3001/api/v1/trips'),
     getAPIData('http://localhost:3001/api/v1/destinations'),
   ]).then(values => values);
-}
-
-/* -------------- Travelers -------------- */
-
-export function getRandomTraveler(travelers) {
-  return travelers[Math.floor(Math.random() * travelers.length)];
 }
 
 /* -------------- Calculation -------------- */
@@ -72,8 +81,10 @@ export function calcTotalCostOfTrip(trip, destination) {
 }
 
 export function calcTimeDifference(date1, date2) {
+  // Dates are passed in in the format yyyy-mm-dd
   const splitDate1 = date1.split('-');
   const splitDate2 = date2.split('-');
+  // Date object needs date format to be mm/dd/yyyy
   date1 = new Date(`${splitDate1[1]}/${splitDate1[2]}/${splitDate1[0]}`);
   date2 = new Date(`${splitDate2[1]}/${splitDate2[2]}/${splitDate2[0]}`);
 
@@ -82,21 +93,9 @@ export function calcTimeDifference(date1, date2) {
   return diffInMs / (1000 * 60 * 60 * 24);
 }
 
-/* -------------- Trips -------------- */
+/* -------------- Login -------------- */
 
-export function findDestinationByID(destinations, destID) {
-  return destinations.find(dest => dest.id === destID);
-}
-
-export function findIDByDestination(destinations, destName) {
-  const destinationNames = getDestinationNames(destinations);
-  if (!destinationNames.includes(destName)) {
-    return false;
-  }
-  
-  return destinations.find(dest => dest.destination === destName).id;
-}
-
-export function getDestinationNames(destinations) {
-  return destinations.map(({ destination }) => destination);
+export function validateLoginCredentials(username, password) {
+  const regex = '^traveler(?:[1-9]|[1-4][0-9]|50)$';
+  return username.match(regex) && password === 'travel';
 }
