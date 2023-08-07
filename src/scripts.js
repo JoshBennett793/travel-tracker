@@ -2,7 +2,6 @@ import './stylesheets/index.scss';
 import './header/header';
 
 import { getAPIData } from './apiCalls';
-import { getRandomTraveler } from './model';
 
 // Query Selectors
 
@@ -34,9 +33,13 @@ function initUserStore() {
 }
 
 export function setAndProcessUserData() {
-  getAPIData('http://localhost:3001/api/v1/travelers').then(data => {
-    userStore.setKey('currentUser', getRandomTraveler(data.travelers));
-  });
+  const currentUserID = localStorage.getItem('currentUserID');
+  getAPIData(`http://localhost:3001/api/v1/travelers/${currentUserID}`)
+    .then(user => {
+      userStore.setKey('currentUser', user);
+      userStore.setKey('currentUserID', currentUserID);
+    },
+  );
 }
 
 export const userStore = initUserStore();

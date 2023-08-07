@@ -93,13 +93,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   findIDByDestination: () => (/* binding */ findIDByDestination),
 /* harmony export */   getAllAPIData: () => (/* binding */ getAllAPIData),
 /* harmony export */   getDestinationNames: () => (/* binding */ getDestinationNames),
-/* harmony export */   getRandomTraveler: () => (/* binding */ getRandomTraveler),
 /* harmony export */   validateLoginCredentials: () => (/* binding */ validateLoginCredentials)
 /* harmony export */ });
 /* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
 
 
-/* -------------- Util -------------- */
+/* -------------- Trips -------------- */
 
 function filterTrips(tripData, criteria, travelerID, year = '2023') {
   const date = new Date();
@@ -112,9 +111,7 @@ function filterTrips(tripData, criteria, travelerID, year = '2023') {
 
   switch (criteria) {
     case 'byYear':
-      return tripData.filter(
-        trip => trip.date.slice(0, 4) === year && trip.status !== 'pending',
-      );
+      return tripData.filter(trip => trip.date.slice(0, 4) === year);
     case 'past':
       return tripData.filter(
         trip => trip.date < currentDate && trip.status !== 'pending',
@@ -130,6 +127,23 @@ function filterTrips(tripData, criteria, travelerID, year = '2023') {
   }
 }
 
+function findDestinationByID(destinations, destID) {
+  return destinations.find(dest => dest.id === destID);
+}
+
+function findIDByDestination(destinations, destName) {
+  const destinationNames = getDestinationNames(destinations);
+  if (!destinationNames.includes(destName)) {
+    return false;
+  }
+
+  return destinations.find(dest => dest.destination === destName).id;
+}
+
+function getDestinationNames(destinations) {
+  return destinations.map(({ destination }) => destination);
+}
+
 /* -------------- Generic Fetch Call -------------- */
 function getAllAPIData() {
   return Promise.all([
@@ -137,12 +151,6 @@ function getAllAPIData() {
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/trips'),
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/destinations'),
   ]).then(values => values);
-}
-
-/* -------------- Travelers -------------- */
-
-function getRandomTraveler(travelers) {
-  return travelers[Math.floor(Math.random() * travelers.length)];
 }
 
 /* -------------- Calculation -------------- */
@@ -171,8 +179,10 @@ function calcTotalCostOfTrip(trip, destination) {
 }
 
 function calcTimeDifference(date1, date2) {
+  // Dates are passed in in the format yyyy-mm-dd
   const splitDate1 = date1.split('-');
   const splitDate2 = date2.split('-');
+  // Date object needs date format to be mm/dd/yyyy
   date1 = new Date(`${splitDate1[1]}/${splitDate1[2]}/${splitDate1[0]}`);
   date2 = new Date(`${splitDate2[1]}/${splitDate2[2]}/${splitDate2[0]}`);
 
@@ -181,29 +191,10 @@ function calcTimeDifference(date1, date2) {
   return diffInMs / (1000 * 60 * 60 * 24);
 }
 
-/* -------------- Trips -------------- */
-
-function findDestinationByID(destinations, destID) {
-  return destinations.find(dest => dest.id === destID);
-}
-
-function findIDByDestination(destinations, destName) {
-  const destinationNames = getDestinationNames(destinations);
-  if (!destinationNames.includes(destName)) {
-    return false;
-  }
-
-  return destinations.find(dest => dest.destination === destName).id;
-}
-
-function getDestinationNames(destinations) {
-  return destinations.map(({ destination }) => destination);
-}
+/* -------------- Login -------------- */
 
 function validateLoginCredentials(username, password) {
-  return username.slice(0, 8) === 'traveler' && password === 'travel'
-    ? true
-    : false;
+  return username.slice(0, 8) === 'traveler' && password === 'travel';
 }
 
 
@@ -287,15 +278,16 @@ loginForm.onsubmit = e => {
 
   const loginIsValid = (0,_model__WEBPACK_IMPORTED_MODULE_0__.validateLoginCredentials)(
     loginData.username,
-    loginData.password
+    loginData.password,
   );
 
   if (loginIsValid) {
-    localStorage.setItem('currentUserID', loginData.username.slice(-2));
-    console.log(localStorage.getItem('currentUserID'));
+    localStorage.setItem('currentUserID', loginData.username.slice(8));
     window.location.href = 'home.html';
   }
 };
+
+// use localStorage user id where needed and then it's on to building the confirmation page
 
 })();
 

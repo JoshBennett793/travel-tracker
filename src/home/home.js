@@ -22,7 +22,7 @@ requestForm.onsubmit = e => {
     postFlightRequest(
       'http://localhost:3001/api/v1/trips',
       trips.trips[trips.trips.length - 1].id,
-      userStore.getKey('currentUser').id,
+      userStore.getKey('currentUserID'),
       requestData.destID,
       requestData.pax,
       requestData.startDate,

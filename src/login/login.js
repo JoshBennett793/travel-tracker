@@ -15,12 +15,13 @@ loginForm.onsubmit = e => {
 
   const loginIsValid = validateLoginCredentials(
     loginData.username,
-    loginData.password
+    loginData.password,
   );
 
   if (loginIsValid) {
-    localStorage.setItem('currentUserID', loginData.username.slice(-2));
-    console.log(localStorage.getItem('currentUserID'));
+    localStorage.setItem('currentUserID', loginData.username.slice(8));
     window.location.href = 'home.html';
   }
 };
+
+// use localStorage user id where needed and then it's on to building the confirmation page

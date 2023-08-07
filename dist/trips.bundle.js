@@ -13,8 +13,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _header_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
 /* harmony import */ var _header_header__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_header_header__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(11);
-
 
 
 
@@ -50,13 +48,18 @@ function initUserStore() {
 }
 
 function setAndProcessUserData() {
-  (0,_apiCalls__WEBPACK_IMPORTED_MODULE_2__.getAPIData)('http://localhost:3001/api/v1/travelers').then(data => {
-    userStore.setKey('currentUser', (0,_model__WEBPACK_IMPORTED_MODULE_3__.getRandomTraveler)(data.travelers));
-  });
+  const currentUserID = localStorage.getItem('currentUserID');
+  (0,_apiCalls__WEBPACK_IMPORTED_MODULE_2__.getAPIData)(`http://localhost:3001/api/v1/travelers/${currentUserID}`)
+    .then(user => {
+      userStore.setKey('currentUser', user);
+      userStore.setKey('currentUserID', currentUserID);
+    },
+  );
 }
 
 const userStore = initUserStore();
 setAndProcessUserData();
+
 
 /***/ }),
 /* 1 */
@@ -683,13 +686,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   findIDByDestination: () => (/* binding */ findIDByDestination),
 /* harmony export */   getAllAPIData: () => (/* binding */ getAllAPIData),
 /* harmony export */   getDestinationNames: () => (/* binding */ getDestinationNames),
-/* harmony export */   getRandomTraveler: () => (/* binding */ getRandomTraveler),
 /* harmony export */   validateLoginCredentials: () => (/* binding */ validateLoginCredentials)
 /* harmony export */ });
 /* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
 
 
-/* -------------- Util -------------- */
+/* -------------- Trips -------------- */
 
 function filterTrips(tripData, criteria, travelerID, year = '2023') {
   const date = new Date();
@@ -702,9 +704,7 @@ function filterTrips(tripData, criteria, travelerID, year = '2023') {
 
   switch (criteria) {
     case 'byYear':
-      return tripData.filter(
-        trip => trip.date.slice(0, 4) === year && trip.status !== 'pending',
-      );
+      return tripData.filter(trip => trip.date.slice(0, 4) === year);
     case 'past':
       return tripData.filter(
         trip => trip.date < currentDate && trip.status !== 'pending',
@@ -720,6 +720,23 @@ function filterTrips(tripData, criteria, travelerID, year = '2023') {
   }
 }
 
+function findDestinationByID(destinations, destID) {
+  return destinations.find(dest => dest.id === destID);
+}
+
+function findIDByDestination(destinations, destName) {
+  const destinationNames = getDestinationNames(destinations);
+  if (!destinationNames.includes(destName)) {
+    return false;
+  }
+
+  return destinations.find(dest => dest.destination === destName).id;
+}
+
+function getDestinationNames(destinations) {
+  return destinations.map(({ destination }) => destination);
+}
+
 /* -------------- Generic Fetch Call -------------- */
 function getAllAPIData() {
   return Promise.all([
@@ -727,12 +744,6 @@ function getAllAPIData() {
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/trips'),
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/destinations'),
   ]).then(values => values);
-}
-
-/* -------------- Travelers -------------- */
-
-function getRandomTraveler(travelers) {
-  return travelers[Math.floor(Math.random() * travelers.length)];
 }
 
 /* -------------- Calculation -------------- */
@@ -761,8 +772,10 @@ function calcTotalCostOfTrip(trip, destination) {
 }
 
 function calcTimeDifference(date1, date2) {
+  // Dates are passed in in the format yyyy-mm-dd
   const splitDate1 = date1.split('-');
   const splitDate2 = date2.split('-');
+  // Date object needs date format to be mm/dd/yyyy
   date1 = new Date(`${splitDate1[1]}/${splitDate1[2]}/${splitDate1[0]}`);
   date2 = new Date(`${splitDate2[1]}/${splitDate2[2]}/${splitDate2[0]}`);
 
@@ -771,29 +784,10 @@ function calcTimeDifference(date1, date2) {
   return diffInMs / (1000 * 60 * 60 * 24);
 }
 
-/* -------------- Trips -------------- */
-
-function findDestinationByID(destinations, destID) {
-  return destinations.find(dest => dest.id === destID);
-}
-
-function findIDByDestination(destinations, destName) {
-  const destinationNames = getDestinationNames(destinations);
-  if (!destinationNames.includes(destName)) {
-    return false;
-  }
-
-  return destinations.find(dest => dest.destination === destName).id;
-}
-
-function getDestinationNames(destinations) {
-  return destinations.map(({ destination }) => destination);
-}
+/* -------------- Login -------------- */
 
 function validateLoginCredentials(username, password) {
-  return username.slice(0, 8) === 'traveler' && password === 'travel'
-    ? true
-    : false;
+  return username.slice(0, 8) === 'traveler' && password === 'travel';
 }
 
 
@@ -822,7 +816,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function displayFilteredTrips(tripData) {
+function displayFilteredTrips(tripData, criteria) {
   const resultsEl = document.querySelector('.results-container');
   resultsEl.innerHTML = '';
 
@@ -831,7 +825,7 @@ function displayFilteredTrips(tripData) {
       tripData.destinations,
       trip.destinationID,
     );
-    resultsEl.appendChild(new _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__.TripCard(trip, destination));
+    resultsEl.appendChild(new _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__.TripCard(trip, destination, criteria));
   });
 }
 
@@ -913,24 +907,6 @@ function displayError(err) {
   errMsg.innerText = err;
 }
 
-// validate for if input is present in destinations array
-
-// export function validateDestinationInput(destinations, value) {
-//   const destinationNames = getDestinationNames(destinations);
-//   if (
-//     destinationNames.includes(dest =>
-//       dest.every(letter => letter === value[dest.indexOf(letter)]),
-//     )
-//   ) {
-//     console.log("it's valid");
-//     requestFormDestinationInput.setCustomValidity('Valid field.');
-//   } else {
-//     console.log("it's invalid");
-//     requestFormDestinationInput.setCustomValidity('Invalid field.');
-//     console.log('valid? ', requestFormDestinationInput.validity.valid);
-//   }
-// }
-
 function InputValidator(destinations) {
   const destinationNames = (0,_model__WEBPACK_IMPORTED_MODULE_0__.getDestinationNames)(destinations);
 
@@ -961,7 +937,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   TripCard: () => (/* binding */ TripCard)
 /* harmony export */ });
-function TripCard(trip, destination) {
+function TripCard(trip, destination, criteria) {
   const card = document.createElement('article');
   card.id = trip.id;
   card.classList.add('trip-card');
@@ -980,7 +956,7 @@ function TripCard(trip, destination) {
   const dataContainer = document.createElement('div');
   dataContainer.classList.add('card-data-container');
   card.appendChild(dataContainer);
-  
+
   const destinationTitle = document.createElement('h2');
   destinationTitle.innerText = destination.destination;
   dataContainer.appendChild(destinationTitle);
@@ -988,12 +964,17 @@ function TripCard(trip, destination) {
 
   const lastVisitDate = document.createElement('p');
   lastVisitDate.innerText = `Last visited: ${trip.date}`;
-  dataContainer.append(lastVisitDate);
+  dataContainer.appendChild(lastVisitDate);
   lastVisitDate.setAttribute('tabindex', 0);
-  
+
+  if (criteria) {
+    const status = document.createElement('p');
+    status.innerText = `Status: ${trip.status}`;
+    dataContainer.appendChild(status);
+  }
+
   return card;
 }
-
 
 
 /***/ }),
@@ -1216,17 +1197,20 @@ function setAndProcessData() {
 
 function processData(criteria = 'pending') {
   let tripData = aggregateTripData(criteria);
-  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayFilteredTrips)({
-    trips: tripData.filteredTrips,
-    destinations: dataStore.getKey('destinations'),
-  });
+  (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayFilteredTrips)(
+    {
+      trips: tripData.filteredTrips,
+      destinations: dataStore.getKey('destinations'),
+    },
+    criteria,
+  );
   (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displaySelectedFilterOption)(criteria);
   (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayTotalSpent)(
     (0,_model__WEBPACK_IMPORTED_MODULE_2__.calcTotalSpentByYear)(
       _scripts__WEBPACK_IMPORTED_MODULE_1__.userStore.getKey('currentUser').id,
       dataStore.getKey('trips'),
       dataStore.getKey('destinations'),
-      '2022', // change to be current year when trips can be approved
+      '2023',
     ),
   );
 }

@@ -1,7 +1,7 @@
 import { findDestinationByID, getDestinationNames } from './model';
 import { TripCard } from './trips/trips-card';
 
-export function displayFilteredTrips(tripData) {
+export function displayFilteredTrips(tripData, criteria) {
   const resultsEl = document.querySelector('.results-container');
   resultsEl.innerHTML = '';
 
@@ -10,7 +10,7 @@ export function displayFilteredTrips(tripData) {
       tripData.destinations,
       trip.destinationID,
     );
-    resultsEl.appendChild(new TripCard(trip, destination));
+    resultsEl.appendChild(new TripCard(trip, destination, criteria));
   });
 }
 
@@ -91,24 +91,6 @@ export function displayError(err) {
   const errMsg = document.querySelector('.error-message');
   errMsg.innerText = err;
 }
-
-// validate for if input is present in destinations array
-
-// export function validateDestinationInput(destinations, value) {
-//   const destinationNames = getDestinationNames(destinations);
-//   if (
-//     destinationNames.includes(dest =>
-//       dest.every(letter => letter === value[dest.indexOf(letter)]),
-//     )
-//   ) {
-//     console.log("it's valid");
-//     requestFormDestinationInput.setCustomValidity('Valid field.');
-//   } else {
-//     console.log("it's invalid");
-//     requestFormDestinationInput.setCustomValidity('Invalid field.');
-//     console.log('valid? ', requestFormDestinationInput.validity.valid);
-//   }
-// }
 
 export function InputValidator(destinations) {
   const destinationNames = getDestinationNames(destinations);
