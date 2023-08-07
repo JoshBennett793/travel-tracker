@@ -41,8 +41,10 @@ header {
     }
     padding-inline-start: 0;
 
-    li {
+    li button {
       cursor: pointer;
+      background: transparent;
+      border: none;
 
       &:hover {
         color: $brand-color-1;

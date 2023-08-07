@@ -1,3 +1,5 @@
+import { displayError } from './domManipulation';
+
 export function getAPIData(url) {
   return fetch(url)
     .then(res => {
@@ -45,8 +47,10 @@ export function postFlightRequest(
 
       if (resp.status === 400) {
         throw new Error('There has been a user error');
-      } else if (resp.status === 422) {
-        throw new Error('The form is has been sent with missing information');
+      } else if (resp.status === 422 || resp.status === 404) {
+        throw new Error(
+          'The destination you wish to travel to is not within our travel network. Please select from our dropdown list of destinations.',
+        );
       } else if (resp.status >= 500) {
         throw new Error(
           `There has been a network error: ${resp.status} ${resp.statusText}. Please refresh the page or try again later.`,
@@ -57,5 +61,9 @@ export function postFlightRequest(
         );
       }
     })
-    .catch(err => console.error(err));
+    .then(data => data)
+    .catch(err => {
+      console.error(err);
+      displayError(err);
+    });
 }

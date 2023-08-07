@@ -1,8 +1,7 @@
 import '../stylesheets/partials/trips/_trips-base.scss';
 
 import { userStore } from '../scripts';
-import { calcTotalSpentByYear, filterTrips } from '../model';
-import { getAPIData } from '../apiCalls';
+import { calcTotalSpentByYear, filterTrips, getAllAPIData } from '../model';
 import {
   displayFilteredTrips,
   displaySelectedFilterOption,
@@ -43,15 +42,11 @@ function initDataStore() {
 }
 
 export const dataStore = initDataStore();
-setAndProcessData();
 
 export function setAndProcessData() {
-  Promise.all([
-    getAPIData(dataStore.getAPIKey('trips')),
-    getAPIData(dataStore.getAPIKey('destinations')),
-  ])
+  getAllAPIData()
     .then(values => {
-      const [trips, destinations] = values;
+      const [travelers, trips, destinations] = values;
       dataStore.setKey('trips', trips.trips);
       dataStore.setKey('destinations', destinations.destinations);
     })
@@ -60,19 +55,31 @@ export function setAndProcessData() {
     });
 }
 
-function processData(criteria = 'past') {
+function processData(criteria = 'pending') {
   let tripData = aggregateTripData(criteria);
   displayFilteredTrips({
     trips: tripData.filteredTrips,
     destinations: dataStore.getKey('destinations'),
   });
   displaySelectedFilterOption(criteria);
-  displayTotalSpent(calcTotalSpentByYear(
-    userStore.getKey('currentUser').id,
-    dataStore.getKey('trips'),
-    dataStore.getKey('destinations'),
-    '2022' // change to be current year when trips can be approved
-  ))
+  displayTotalSpent(
+    calcTotalSpentByYear(
+      userStore.getKey('currentUser').id,
+      dataStore.getKey('trips'),
+      dataStore.getKey('destinations'),
+      '2022', // change to be current year when trips can be approved
+    ),
+  );
+}
+
+function aggregateTripData(filterCriteria) {
+  const trips = dataStore.getKey('trips');
+  const userID = userStore.getKey('currentUser').id;
+  const filteredTrips = filterTrips(trips, filterCriteria, userID);
+  return {
+    userID,
+    filteredTrips,
+  };
 }
 
 // Event Listeners
@@ -85,13 +92,3 @@ window.addEventListener('load', () => {
     };
   });
 });
-
-function aggregateTripData(filterCriteria) {
-  const trips = dataStore.getKey('trips');
-  const userID = userStore.getKey('currentUser').id;
-  const filteredTrips = filterTrips(trips, filterCriteria, userID);
-  return {
-    userID,
-    filteredTrips,
-  };
-}

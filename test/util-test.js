@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import { filterTrips } from '../src/model';
-import { sampleTrips } from '../src/data/sampleData';
+import { filterTrips, findDestinationByID, findIDByDestination } from '../src/model';
+import { sampleDestinations, sampleTrips } from '../src/data/sampleData';
 
-describe('Should filter the data', () => {
+describe('Filter trips data', () => {
   let tripsByYear, pastTrips, upcomingTrips, pendingTrips;
 
   beforeEach('init data', () => {
@@ -85,3 +85,20 @@ describe('Should filter the data', () => {
     ]);
   });
 });
+
+describe('Find destination data', () => {
+  let destination, destID;
+
+  beforeEach('init data', () => {
+    destination = findDestinationByID(sampleDestinations, 2);
+    destID = findIDByDestination(sampleDestinations, 'Lima, Peru');
+  })
+
+  it('Should return a destination when given an id number', () => {
+    expect(destination.destination).to.equal('Stockholm, Sweden');
+  })
+
+  it('Should return an id number when given a destination name', () => {
+    expect(destID).to.equal(1);
+  })
+})

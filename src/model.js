@@ -1,3 +1,5 @@
+import { getAPIData } from './apiCalls';
+
 /* -------------- Util -------------- */
 
 export function filterTrips(tripData, criteria, travelerID, year = '2023') {
@@ -27,6 +29,15 @@ export function filterTrips(tripData, criteria, travelerID, year = '2023') {
     default:
       return tripData;
   }
+}
+
+/* -------------- Generic Fetch Call -------------- */
+export function getAllAPIData() {
+  return Promise.all([
+    getAPIData('http://localhost:3001/api/v1/travelers'),
+    getAPIData('http://localhost:3001/api/v1/trips'),
+    getAPIData('http://localhost:3001/api/v1/destinations'),
+  ]).then(values => values);
 }
 
 /* -------------- Travelers -------------- */
@@ -60,8 +71,32 @@ export function calcTotalCostOfTrip(trip, destination) {
   return subTotal + agentFee;
 }
 
+export function calcTimeDifference(date1, date2) {
+  const splitDate1 = date1.split('-');
+  const splitDate2 = date2.split('-');
+  date1 = new Date(`${splitDate1[1]}/${splitDate1[2]}/${splitDate1[0]}`);
+  date2 = new Date(`${splitDate2[1]}/${splitDate2[2]}/${splitDate2[0]}`);
+
+  const diffInMs = Math.abs(date1 - date2);
+
+  return diffInMs / (1000 * 60 * 60 * 24);
+}
+
 /* -------------- Trips -------------- */
 
 export function findDestinationByID(destinations, destID) {
   return destinations.find(dest => dest.id === destID);
+}
+
+export function findIDByDestination(destinations, destName) {
+  const destinationNames = getDestinationNames(destinations);
+  if (!destinationNames.includes(destName)) {
+    return false;
+  }
+  
+  return destinations.find(dest => dest.destination === destName).id;
+}
+
+export function getDestinationNames(destinations) {
+  return destinations.map(({ destination }) => destination);
 }

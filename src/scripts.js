@@ -1,4 +1,5 @@
 import './stylesheets/index.scss';
+import './header/header';
 
 import { getAPIData } from './apiCalls';
 import { getRandomTraveler } from './model';
@@ -32,11 +33,11 @@ function initUserStore() {
   };
 }
 
-export const userStore = initUserStore();
-setAndProcessUserData();
-
 export function setAndProcessUserData() {
   getAPIData('http://localhost:3001/api/v1/travelers').then(data => {
     userStore.setKey('currentUser', getRandomTraveler(data.travelers));
   });
 }
+
+export const userStore = initUserStore();
+setAndProcessUserData();
