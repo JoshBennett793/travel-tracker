@@ -57,17 +57,20 @@ export function setAndProcessData() {
 
 function processData(criteria = 'pending') {
   let tripData = aggregateTripData(criteria);
-  displayFilteredTrips({
-    trips: tripData.filteredTrips,
-    destinations: dataStore.getKey('destinations'),
-  });
+  displayFilteredTrips(
+    {
+      trips: tripData.filteredTrips,
+      destinations: dataStore.getKey('destinations'),
+    },
+    criteria,
+  );
   displaySelectedFilterOption(criteria);
   displayTotalSpent(
     calcTotalSpentByYear(
       userStore.getKey('currentUser').id,
       dataStore.getKey('trips'),
       dataStore.getKey('destinations'),
-      '2022', // change to be current year when trips can be approved
+      '2023',
     ),
   );
 }

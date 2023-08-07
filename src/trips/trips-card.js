@@ -1,4 +1,4 @@
-export function TripCard(trip, destination) {
+export function TripCard(trip, destination, criteria) {
   const card = document.createElement('article');
   card.id = trip.id;
   card.classList.add('trip-card');
@@ -17,7 +17,7 @@ export function TripCard(trip, destination) {
   const dataContainer = document.createElement('div');
   dataContainer.classList.add('card-data-container');
   card.appendChild(dataContainer);
-  
+
   const destinationTitle = document.createElement('h2');
   destinationTitle.innerText = destination.destination;
   dataContainer.appendChild(destinationTitle);
@@ -25,9 +25,14 @@ export function TripCard(trip, destination) {
 
   const lastVisitDate = document.createElement('p');
   lastVisitDate.innerText = `Last visited: ${trip.date}`;
-  dataContainer.append(lastVisitDate);
+  dataContainer.appendChild(lastVisitDate);
   lastVisitDate.setAttribute('tabindex', 0);
-  
+
+  if (criteria) {
+    const status = document.createElement('p');
+    status.innerText = `Status: ${trip.status}`;
+    dataContainer.appendChild(status);
+  }
+
   return card;
 }
-
