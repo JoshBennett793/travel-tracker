@@ -93,7 +93,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   handleFormKeyboardInput: () => (/* binding */ handleFormKeyboardInput),
 /* harmony export */   navigateToPending: () => (/* binding */ navigateToPending),
 /* harmony export */   renderAllDestinationOptions: () => (/* binding */ renderAllDestinationOptions),
-/* harmony export */   setMinDateOption: () => (/* binding */ setMinDateOption)
+/* harmony export */   setMinDateOption: () => (/* binding */ setMinDateOption),
+/* harmony export */   toggleConfirmationPage: () => (/* binding */ toggleConfirmationPage)
 /* harmony export */ });
 /* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
 /* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
@@ -132,7 +133,8 @@ function displayTotalSpent(total) {
   totalSpentContainer.setAttribute('tabindex', 0);
 }
 
-// Trip Request Form Inputs
+/* -------------- Request Form Inputs -------------- */
+
 const requestFormDestinationInput = document.querySelector('#destination');
 const dropdownOpts = document.querySelector('.dropdown-options');
 const dateInputs = document.querySelectorAll('input[type="date"]');
@@ -209,6 +211,13 @@ function InputValidator(destinations) {
 
 function navigateToPending() {
   window.location.href = 'trips.html';
+}
+
+/* -------------- Trips -------------- */
+
+function toggleConfirmationPage() {
+  const confPage = document.querySelector('.confirmation-page-container');
+  confPage.classList.toggle('collapsed');
 }
 
 

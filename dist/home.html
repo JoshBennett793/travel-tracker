@@ -69,6 +69,47 @@
         <div class="button-container"><button>Request Trip</button></div>
       </form>
     </div>
+
+    <div class="confirmation-page-container">
+      <div class="confirmation-page-top">
+        <h1>Trip Summary</h1>
+        <h2>Total: $<span class="trip-total">4,500</span></h2>
+        <button class="confirm-trip-request">Confirm request</button>
+      </div>
+      <div class="confirmation-page-bottom">
+        <article class="confirmation-page-detail">
+          <h3 class="conf-destination">Destination:</h3>
+          <p>Lima, Peru</p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-flight-cost">Flight Cost ($<span class="flight-cost">700</span>/person):</h3>
+          <p>$<span class="flight-cost-total">3000</span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-living-expense">Living Expenses ($<span class="living-expense-cost">100</span>/day):</h3>
+          <p>$<span class="living-expense-total">700</span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-subtotal">Subtotal:</h3>
+          <p>$<span class="subtotal">3700</span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-agent-fee">Agent Fee (10%):</h3>
+          <p>$<span class="agent-fee-cost">370</span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-grand-total">Total:</h3>
+          <p>$<span class="grand-total-cost">4070</span></p>
+        </article>
+        <button class="cancel-trip-request">Cancel</button>
+      </div>
+    </div>
+
     <script src="index.bundle.js"></script>
     <script src="home.bundle.js"></script>
   </body>
