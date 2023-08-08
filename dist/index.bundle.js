@@ -838,7 +838,9 @@ function filterTrips(tripData, criteria, travelerID, year = '2023') {
   const dd = date.toLocaleString('default', { day: '2-digit' });
   const currentDate = `${yyyy}/${mm}/${dd}`;
 
-  tripData = tripData.filter(trip => trip.userID === travelerID);
+  tripData = tripData
+    .filter(trip => trip.userID === travelerID)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   switch (criteria) {
     case 'byYear':
@@ -852,7 +854,9 @@ function filterTrips(tripData, criteria, travelerID, year = '2023') {
         trip => trip.date > currentDate && trip.status === 'approved',
       );
     case 'pending':
-      return tripData.filter(trip => trip.status === 'pending');
+      return tripData
+        .filter(trip => trip.status === 'pending')
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
     default:
       return tripData;
   }
