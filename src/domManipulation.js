@@ -1,4 +1,8 @@
-import { findDestinationByID, getDestinationNames } from './model';
+import {
+  calcTotalCostOfTrip,
+  findDestinationByID,
+  getDestinationNames,
+} from './model';
 import { TripCard } from './trips/trips-card';
 
 export function displayFilteredTrips(tripData, criteria) {
@@ -33,7 +37,8 @@ export function displayTotalSpent(total) {
   totalSpentContainer.setAttribute('tabindex', 0);
 }
 
-// Trip Request Form Inputs
+/* -------------- Request Form Inputs -------------- */
+
 const requestFormDestinationInput = document.querySelector('#destination');
 const dropdownOpts = document.querySelector('.dropdown-options');
 const dateInputs = document.querySelectorAll('input[type="date"]');
@@ -110,4 +115,48 @@ export function InputValidator(destinations) {
 
 export function navigateToPending() {
   window.location.href = 'trips.html';
+}
+
+/* -------------- Confirmation Page -------------- */
+
+export function toggleConfirmationPage() {
+  const confPage = document.querySelector('.confirmation-page-container');
+  confPage.classList.toggle('collapsed');
+}
+
+export function populateConfirmationPageData(destinations, request) {
+  const destination = findDestinationByID(destinations, request.destID);
+  const figures = calcTotalCostOfTrip(request, destination);
+
+  const tripTotal = document.querySelector('.trip-total');
+  tripTotal.innerText = figures.total.toLocaleString('en-US');
+
+  const destinationEl = document.querySelector('.destination-value');
+  destinationEl.innerText = destination.destination;
+
+  const flightCost = document.querySelector('.flight-cost');
+  flightCost.innerText =
+    destination.estimatedFlightCostPerPerson.toLocaleString('en-US');
+
+  const flightCostTotal = document.querySelector('.flight-cost-total');
+  flightCostTotal.innerText = figures.flightCost.toLocaleString('en-US');
+
+  const livingExpenseCost = document.querySelector('.living-expense-cost');
+  livingExpenseCost.innerText =
+    destination.estimatedLodgingCostPerDay.toLocaleString('en-US');
+
+  const pax = document.querySelector('.num-of-pax');
+  pax.innerText = request.travelers;
+
+  const livingExpenseTotal = document.querySelector('.living-expense-total');
+  livingExpenseTotal.innerText = figures.lodgingCost.toLocaleString('en-US');
+
+  const subTotal = document.querySelector('.subtotal');
+  subTotal.innerText = figures.subTotal.toLocaleString('en-US');
+
+  const agentFee = document.querySelector('.agent-fee-cost');
+  agentFee.innerText = figures.agentFee.toLocaleString('en-US');
+
+  const grandTotal = document.querySelector('.grand-total-cost');
+  grandTotal.innerText = figures.total.toLocaleString('en-US');
 }

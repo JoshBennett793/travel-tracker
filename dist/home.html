@@ -56,7 +56,7 @@
             <label for="pax">Pax:</label>
             <input
               type="number"
-              name="pax"
+              name="travelers"
               id="pax"
               min="1"
               max="20"
@@ -66,9 +66,50 @@
           </div>
         </div>
         <p class="error-message"></p>
-        <div class="button-container"><button>Request</button></div>
+        <div class="button-container"><button>Request Trip</button></div>
       </form>
     </div>
+
+    <div class="confirmation-page-container collapsed">
+      <div class="confirmation-page-top">
+        <h1>Trip Summary</h1>
+        <h2>Total: $<span class="trip-total"></span></h2>
+        <button class="confirm-trip-request">Confirm request</button>
+      </div>
+      <div class="confirmation-page-bottom">
+        <article class="confirmation-page-detail">
+          <h3 class="conf-destination">Destination:</h3>
+          <p class="destination-value"></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-flight-cost">Flight Cost ($<span class="flight-cost"></span>/person, round-trip):</h3>
+          <p>$<span class="flight-cost-total"></span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-living-expense">Living Expenses ($<span class="living-expense-cost"></span>/day):</h3>
+          <p><span class="num-of-pax"></span> traveler(s) $<span class="living-expense-total"></span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-subtotal">Subtotal:</h3>
+          <p>$<span class="subtotal"></span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-agent-fee">Agent Fee (10%):</h3>
+          <p>$<span class="agent-fee-cost"></span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-grand-total">Total:</h3>
+          <p>$<span class="grand-total-cost"></span></p>
+        </article>
+        <button class="cancel-trip-request">Cancel</button>
+      </div>
+    </div>
+
     <script src="index.bundle.js"></script>
     <script src="home.bundle.js"></script>
   </body>

@@ -37,7 +37,7 @@ export function setAndProcessUserData() {
   getAPIData(`http://localhost:3001/api/v1/travelers/${currentUserID}`)
     .then(user => {
       userStore.setKey('currentUser', user);
-      userStore.setKey('currentUserID', currentUserID);
+      userStore.setKey('currentUserID', parseInt(currentUserID));
     },
   );
 }

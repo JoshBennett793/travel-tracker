@@ -49,7 +49,6 @@ export function getDestinationNames(destinations) {
 /* -------------- Generic Fetch Call -------------- */
 export function getAllAPIData() {
   return Promise.all([
-    getAPIData('http://localhost:3001/api/v1/travelers'),
     getAPIData('http://localhost:3001/api/v1/trips'),
     getAPIData('http://localhost:3001/api/v1/destinations'),
   ]).then(values => values);
@@ -62,7 +61,7 @@ export function calcTotalSpentByYear(userID, trips, destinations, year) {
     const destination = findDestinationByID(destinations, trip.destinationID);
     const total = calcTotalCostOfTrip(trip, destination);
 
-    acc += total;
+    acc += total.total;
 
     return acc;
   }, 0);
@@ -76,8 +75,15 @@ export function calcTotalCostOfTrip(trip, destination) {
     trip.duration * destination.estimatedLodgingCostPerDay * trip.travelers;
   const subTotal = flightCost + lodgingCost;
   const agentFee = subTotal * 0.1;
+  const total = subTotal + agentFee;
 
-  return subTotal + agentFee;
+  return {
+    flightCost,
+    lodgingCost,
+    subTotal,
+    agentFee,
+    total,
+  }; // this is going to break the test
 }
 
 export function calcTimeDifference(date1, date2) {

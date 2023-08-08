@@ -15,22 +15,9 @@ import {
 const filterBtns = document.querySelectorAll('.filter-btn');
 
 function initDataStore() {
-  const store = {
-    apiKey: {
-      base: 'http://localhost:3001/api/v1/',
-      endpoints: {
-        trips: 'trips',
-        destinations: 'destinations',
-      },
-    },
-  };
+  const store = {};
 
   return {
-    getAPIKey(endpoint) {
-      const ref = store.apiKey;
-      return `${ref.base}${ref.endpoints[endpoint]}`;
-    },
-
     getKey(key) {
       return store[key];
     },
@@ -46,7 +33,7 @@ export const dataStore = initDataStore();
 export function setAndProcessData() {
   getAllAPIData()
     .then(values => {
-      const [travelers, trips, destinations] = values;
+      const [trips, destinations] = values;
       dataStore.setKey('trips', trips.trips);
       dataStore.setKey('destinations', destinations.destinations);
     })
@@ -56,7 +43,9 @@ export function setAndProcessData() {
 }
 
 function processData(criteria = 'pending') {
-  let tripData = aggregateTripData(criteria);
+  console.log(criteria);
+  const userID = userStore.getKey('currentUser').id;
+  let tripData = aggregateTripData(criteria, userID);
   displayFilteredTrips(
     {
       trips: tripData.filteredTrips,
@@ -67,7 +56,7 @@ function processData(criteria = 'pending') {
   displaySelectedFilterOption(criteria);
   displayTotalSpent(
     calcTotalSpentByYear(
-      userStore.getKey('currentUser').id,
+      userID,
       dataStore.getKey('trips'),
       dataStore.getKey('destinations'),
       '2023',
@@ -75,9 +64,8 @@ function processData(criteria = 'pending') {
   );
 }
 
-function aggregateTripData(filterCriteria) {
+function aggregateTripData(filterCriteria, userID) {
   const trips = dataStore.getKey('trips');
-  const userID = userStore.getKey('currentUser').id;
   const filteredTrips = filterTrips(trips, filterCriteria, userID);
   return {
     userID,

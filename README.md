@@ -99,4 +99,11 @@ _If you are finished with the functionality and testing of your project_, then y
 If you _are_ done, you can follow [this procedure](./gh-pages-procedure.md) to get your project live on GitHub Pages.
 
 IMG Attributions:
-```<a target="_blank" href="https://icons8.com/icon/63262/checkmark">Checkmark</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>``````
+`
+<a target="_blank" href="https://icons8.com/icon/63262/checkmark">Checkmark</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+
+Photo by <a href="https://unsplash.com/@kirillz?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Kirill</a> on <a href="https://unsplash.com/photos/AoJAZq8y6ts?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+
+Photo by <a href="https://unsplash.com/@ramonkagie?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Ramon Kagie</a> on <a href="https://unsplash.com/photos/_Xmn7jaKh1Y?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+  
+`
