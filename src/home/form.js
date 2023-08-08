@@ -12,8 +12,6 @@ const destinationInput = document.querySelector('#destination');
 
 // Event Listeners
 
-let inputValidator;
-
 window.onload = () => {
   fetch('http://localhost:3001/api/v1/destinations')
     .then(resp => {
@@ -34,6 +32,7 @@ window.onload = () => {
 };
 
 // Functions
+let inputValidator;
 
 function initDestinationInput(destinations) {
   destinationInput.onkeyup = e => {

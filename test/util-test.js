@@ -3,6 +3,7 @@ import {
   filterTrips,
   findDestinationByID,
   findIDByDestination,
+  getDestinationNames,
 } from '../src/model';
 import { sampleDestinations, sampleTrips } from '../src/data/sampleData';
 
@@ -100,12 +101,13 @@ describe('Filter trips data', () => {
   });
 });
 
-describe('Find destination data', () => {
-  let destination, destID;
+describe('Destination data', () => {
+  let destination, destID, destinationNames;
 
   beforeEach('init data', () => {
     destination = findDestinationByID(sampleDestinations, 2);
     destID = findIDByDestination(sampleDestinations, 'Lima, Peru');
+    destinationNames = getDestinationNames(sampleDestinations);
   });
 
   it('Should return a destination when given an id number', () => {
@@ -114,5 +116,13 @@ describe('Find destination data', () => {
 
   it('Should return an id number when given a destination name', () => {
     expect(destID).to.equal(1);
+  });
+
+  it('Should return an array of destination names', () => {
+    expect(destinationNames).to.deep.equal([
+      'Lima, Peru',
+      'Stockholm, Sweden',
+      'Sydney, Australia',
+    ]);
   });
 });

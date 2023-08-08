@@ -1,6 +1,6 @@
 import { getAPIData } from './apiCalls';
 
-/* -------------- Trips -------------- */
+/* -------------- Utility -------------- */
 
 export function filterTrips(tripData, criteria, travelerID, year = '2023') {
   const date = new Date();
@@ -83,7 +83,7 @@ export function calcTotalCostOfTrip(trip, destination) {
     subTotal,
     agentFee,
     total,
-  }; // this is going to break the test
+  };
 }
 
 export function calcTimeDifference(date1, date2) {

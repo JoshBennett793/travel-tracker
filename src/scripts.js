@@ -5,7 +5,6 @@ import { getAPIData } from './apiCalls';
 
 // Query Selectors
 
-// Nav
 const navBtns = document.querySelectorAll('.site-nav-list-item');
 
 // Event Listeners

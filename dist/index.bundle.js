@@ -504,7 +504,6 @@ __webpack_require__.r(__webpack_exports__);
 
 // Query Selectors
 
-// Nav
 const navBtns = document.querySelectorAll('.site-nav-list-item button');
 
 // Event Listeners
@@ -726,7 +725,6 @@ __webpack_require__.r(__webpack_exports__);
 
 // Query Selectors
 
-// Nav
 const navBtns = document.querySelectorAll('.site-nav-list-item');
 
 // Event Listeners
