@@ -2,6 +2,7 @@ import './stylesheets/index.scss';
 import './header/header';
 
 import { getAPIData } from './apiCalls';
+import { displayUserName } from './domManipulation';
 
 // Query Selectors
 
@@ -36,7 +37,9 @@ export function setAndProcessUserData() {
   getAPIData(`http://localhost:3001/api/v1/travelers/${currentUserID}`)
     .then(user => {
       userStore.setKey('currentUser', user);
+      displayUserName(user.name.split(' ')[0]);
       userStore.setKey('currentUserID', parseInt(currentUserID));
+
     },
   );
 }
