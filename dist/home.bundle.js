@@ -1071,6 +1071,8 @@ __webpack_require__.r(__webpack_exports__);
 // Query Selectors
 
 const destinationInput = document.querySelector('#destination');
+const startDateInput = document.querySelector('#start-date');
+const endDateInput = document.querySelector('#end-date');
 
 // Event Listeners
 
@@ -1086,6 +1088,11 @@ window.onload = () => {
       (0,_domManipulation__WEBPACK_IMPORTED_MODULE_0__.renderAllDestinationOptions)(data.destinations);
       (0,_domManipulation__WEBPACK_IMPORTED_MODULE_0__.handleFormKeyboardInput)();
       (0,_domManipulation__WEBPACK_IMPORTED_MODULE_0__.setMinDateOption)();
+      endDateInput.onfocus = () => {
+        endDateInput.min = new Date(startDateInput.value)
+          .toISOString()
+          .split('T')[0];
+      };
       return data;
     })
     .then(data => {

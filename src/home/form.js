@@ -9,6 +9,8 @@ import { calcTimeDifference, findIDByDestination } from '../model';
 // Query Selectors
 
 const destinationInput = document.querySelector('#destination');
+const startDateInput = document.querySelector('#start-date');
+const endDateInput = document.querySelector('#end-date');
 
 // Event Listeners
 
@@ -24,6 +26,11 @@ window.onload = () => {
       renderAllDestinationOptions(data.destinations);
       handleFormKeyboardInput();
       setMinDateOption();
+      endDateInput.onfocus = () => {
+        endDateInput.min = new Date(startDateInput.value)
+          .toISOString()
+          .split('T')[0];
+      };
       return data;
     })
     .then(data => {
