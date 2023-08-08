@@ -279,7 +279,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
 
 
-/* -------------- Trips -------------- */
+/* -------------- Utility -------------- */
 
 function filterTrips(tripData, criteria, travelerID, year = '2023') {
   const date = new Date();
@@ -362,7 +362,7 @@ function calcTotalCostOfTrip(trip, destination) {
     subTotal,
     agentFee,
     total,
-  }; // this is going to break the test
+  };
 }
 
 function calcTimeDifference(date1, date2) {

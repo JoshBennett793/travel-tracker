@@ -22,7 +22,6 @@ requestForm.onsubmit = e => {
 };
 
 function confirmRequestWithUser() {
-  let trips;
   toggleConfirmationPage();
 
   const confirmBtn = document.querySelector('.confirm-trip-request');
@@ -39,13 +38,11 @@ function confirmRequestWithUser() {
       return { tripsData, requestData };
     })
     .then(data => {
-      // Confirm Button Event Listener
       confirmBtn.onclick = () => {
         toggleConfirmationPage();
         processTripRequest(data.requestData, data.tripsData);
       };
 
-      // Cancel Button Event Listener
       cancelBtn.onclick = () => {
         toggleConfirmationPage();
       };

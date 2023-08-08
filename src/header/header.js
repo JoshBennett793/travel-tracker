@@ -1,6 +1,5 @@
 // Query Selectors
 
-// Nav
 const navBtns = document.querySelectorAll('.site-nav-list-item button');
 
 // Event Listeners

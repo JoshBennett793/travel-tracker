@@ -20,7 +20,6 @@ __webpack_require__.r(__webpack_exports__);
 
 // Query Selectors
 
-// Nav
 const navBtns = document.querySelectorAll('.site-nav-list-item');
 
 // Event Listeners
@@ -565,7 +564,6 @@ __webpack_require__.r(__webpack_exports__);
 
 // Query Selectors
 
-// Nav
 const navBtns = document.querySelectorAll('.site-nav-list-item button');
 
 // Event Listeners
@@ -681,7 +679,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
 
 
-/* -------------- Trips -------------- */
+/* -------------- Utility -------------- */
 
 function filterTrips(tripData, criteria, travelerID, year = '2023') {
   const date = new Date();
@@ -764,7 +762,7 @@ function calcTotalCostOfTrip(trip, destination) {
     subTotal,
     agentFee,
     total,
-  }; // this is going to break the test
+  };
 }
 
 function calcTimeDifference(date1, date2) {
@@ -810,8 +808,6 @@ const destinationInput = document.querySelector('#destination');
 
 // Event Listeners
 
-let inputValidator;
-
 window.onload = () => {
   fetch('http://localhost:3001/api/v1/destinations')
     .then(resp => {
@@ -832,6 +828,7 @@ window.onload = () => {
 };
 
 // Functions
+let inputValidator;
 
 function initDestinationInput(destinations) {
   destinationInput.onkeyup = e => {
@@ -1225,7 +1222,6 @@ requestForm.onsubmit = e => {
 };
 
 function confirmRequestWithUser() {
-  let trips;
   (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
 
   const confirmBtn = document.querySelector('.confirm-trip-request');
@@ -1242,13 +1238,11 @@ function confirmRequestWithUser() {
       return { tripsData, requestData };
     })
     .then(data => {
-      // Confirm Button Event Listener
       confirmBtn.onclick = () => {
         (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
         processTripRequest(data.requestData, data.tripsData);
       };
 
-      // Cancel Button Event Listener
       cancelBtn.onclick = () => {
         (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
       };
