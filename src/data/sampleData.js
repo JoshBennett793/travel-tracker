@@ -100,7 +100,7 @@ export const sampleDestinations = [
   },
   {
     id: 3,
-    destination: 'Sydney, Austrailia',
+    destination: 'Sydney, Australia',
     estimatedLodgingCostPerDay: 130,
     estimatedFlightCostPerPerson: 950,
     image:
