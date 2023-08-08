@@ -10,7 +10,18 @@ header {
     rgba(0, 0, 0, 0) 100%
   );
 
+  .user-greeting {
+    position: absolute;
+    top: 4%;
+    right: 10%;
+
+    .user-name {
+      color: $brand-color-1;
+    }
+  }
+
   .logo-container {
+    @include centered-flex-container;
     background: url('./logo.png') center center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -21,6 +32,19 @@ header {
     left: 10vw;
     height: 150px;
     width: 150px;
+
+    .logo-text {
+      position: absolute;
+      top: 30%;
+      left: 160%;
+    }
+
+    .logo-brand-color {
+      position: absolute;
+      top: -50%;
+      left: -220%;
+      color: $brand-color-1;
+    }
   }
 }
 
