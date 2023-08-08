@@ -1,8 +1,18 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
-/******/ 	var __webpack_modules__ = ({
-
-/***/ 10:
+/******/ 	var __webpack_modules__ = ([
+/* 0 */,
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -79,8 +89,7 @@ function postFlightRequest(
 
 
 /***/ }),
-
-/***/ 15:
+/* 12 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -98,8 +107,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   setMinDateOption: () => (/* binding */ setMinDateOption),
 /* harmony export */   toggleConfirmationPage: () => (/* binding */ toggleConfirmationPage)
 /* harmony export */ });
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
-/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(13);
+/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
 
 
 
@@ -268,8 +277,7 @@ function populateConfirmationPageData(destinations, request) {
 
 
 /***/ }),
-
-/***/ 11:
+/* 13 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -284,7 +292,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   getDestinationNames: () => (/* binding */ getDestinationNames),
 /* harmony export */   validateLoginCredentials: () => (/* binding */ validateLoginCredentials)
 /* harmony export */ });
-/* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
+/* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
 
 
 /* -------------- Utility -------------- */
@@ -334,6 +342,7 @@ function getDestinationNames(destinations) {
 }
 
 /* -------------- Generic Fetch Call -------------- */
+
 function getAllAPIData() {
   return Promise.all([
     (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/trips'),
@@ -395,8 +404,7 @@ function validateLoginCredentials(username, password) {
 
 
 /***/ }),
-
-/***/ 16:
+/* 14 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -446,8 +454,7 @@ function TripCard(trip, destination, criteria) {
 
 
 /***/ })
-
-/******/ 	});
+/******/ 	]);
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
@@ -507,8 +514,8 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15);
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
+/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
 
 
 

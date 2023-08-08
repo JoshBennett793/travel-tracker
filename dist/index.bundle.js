@@ -316,9 +316,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6);
 /* harmony import */ var _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _partials_login_jet_wing_jpg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(21);
-/* harmony import */ var _partials_header_logo_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7);
-/* harmony import */ var _partials_home_private_jet_jpg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(22);
+/* harmony import */ var _partials_login_jet_wing_jpg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7);
+/* harmony import */ var _partials_header_logo_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8);
+/* harmony import */ var _partials_home_private_jet_jpg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9);
 // Imports
 
 
@@ -495,11 +495,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("images/jet-wing.jpg");
+
+/***/ }),
+/* 8 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("images/logo.png");
 
 /***/ }),
-/* 8 */,
 /* 9 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("images/private-jet.jpg");
+
+/***/ }),
+/* 10 */
 /***/ (() => {
 
 // Query Selectors
@@ -522,7 +543,7 @@ navBtns.forEach(btn => {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -600,137 +621,7 @@ function postFlightRequest(
 
 
 /***/ }),
-/* 11 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   calcTimeDifference: () => (/* binding */ calcTimeDifference),
-/* harmony export */   calcTotalCostOfTrip: () => (/* binding */ calcTotalCostOfTrip),
-/* harmony export */   calcTotalSpentByYear: () => (/* binding */ calcTotalSpentByYear),
-/* harmony export */   filterTrips: () => (/* binding */ filterTrips),
-/* harmony export */   findDestinationByID: () => (/* binding */ findDestinationByID),
-/* harmony export */   findIDByDestination: () => (/* binding */ findIDByDestination),
-/* harmony export */   getAllAPIData: () => (/* binding */ getAllAPIData),
-/* harmony export */   getDestinationNames: () => (/* binding */ getDestinationNames),
-/* harmony export */   validateLoginCredentials: () => (/* binding */ validateLoginCredentials)
-/* harmony export */ });
-/* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(10);
-
-
-/* -------------- Utility -------------- */
-
-function filterTrips(tripData, criteria, travelerID, year = '2023') {
-  const date = new Date();
-  const yyyy = date.toLocaleString('default', { year: 'numeric' });
-  const mm = date.toLocaleString('default', { month: '2-digit' });
-  const dd = date.toLocaleString('default', { day: '2-digit' });
-  const currentDate = `${yyyy}/${mm}/${dd}`;
-
-  tripData = tripData.filter(trip => trip.userID === travelerID);
-
-  switch (criteria) {
-    case 'byYear':
-      return tripData.filter(trip => trip.date.slice(0, 4) === year);
-    case 'past':
-      return tripData.filter(
-        trip => trip.date < currentDate && trip.status !== 'pending',
-      );
-    case 'upcoming':
-      return tripData.filter(
-        trip => trip.date > currentDate && trip.status === 'approved',
-      );
-    case 'pending':
-      return tripData.filter(trip => trip.status === 'pending');
-    default:
-      return tripData;
-  }
-}
-
-function findDestinationByID(destinations, destID) {
-  return destinations.find(dest => dest.id === destID);
-}
-
-function findIDByDestination(destinations, destName) {
-  const destinationNames = getDestinationNames(destinations);
-  if (!destinationNames.includes(destName)) {
-    return false;
-  }
-
-  return destinations.find(dest => dest.destination === destName).id;
-}
-
-function getDestinationNames(destinations) {
-  return destinations.map(({ destination }) => destination);
-}
-
-/* -------------- Generic Fetch Call -------------- */
-function getAllAPIData() {
-  return Promise.all([
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/trips'),
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/destinations'),
-  ]).then(values => values);
-}
-
-/* -------------- Calculation -------------- */
-
-function calcTotalSpentByYear(userID, trips, destinations, year) {
-  return filterTrips(trips, 'byYear', userID, year).reduce((acc, trip) => {
-    const destination = findDestinationByID(destinations, trip.destinationID);
-    const total = calcTotalCostOfTrip(trip, destination);
-
-    acc += total.total;
-
-    return acc;
-  }, 0);
-}
-
-function calcTotalCostOfTrip(trip, destination) {
-  const flightCost =
-    trip.travelers * (destination.estimatedFlightCostPerPerson * 2);
-
-  const lodgingCost =
-    trip.duration * destination.estimatedLodgingCostPerDay * trip.travelers;
-  const subTotal = flightCost + lodgingCost;
-  const agentFee = subTotal * 0.1;
-  const total = subTotal + agentFee;
-
-  return {
-    flightCost,
-    lodgingCost,
-    subTotal,
-    agentFee,
-    total,
-  };
-}
-
-function calcTimeDifference(date1, date2) {
-  // Dates are passed in in the format yyyy-mm-dd
-  const splitDate1 = date1.split('-');
-  const splitDate2 = date2.split('-');
-  // Date object needs date format to be mm/dd/yyyy
-  date1 = new Date(`${splitDate1[1]}/${splitDate1[2]}/${splitDate1[0]}`);
-  date2 = new Date(`${splitDate2[1]}/${splitDate2[2]}/${splitDate2[0]}`);
-
-  const diffInMs = Math.abs(date1 - date2);
-
-  return diffInMs / (1000 * 60 * 60 * 24);
-}
-
-/* -------------- Login -------------- */
-
-function validateLoginCredentials(username, password) {
-  const regex = '^traveler(?:[1-9]|[1-4][0-9]|50)$';
-  return username.match(regex) && password === 'travel';
-}
-
-
-/***/ }),
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */
+/* 12 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -749,8 +640,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   setMinDateOption: () => (/* binding */ setMinDateOption),
 /* harmony export */   toggleConfirmationPage: () => (/* binding */ toggleConfirmationPage)
 /* harmony export */ });
-/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
-/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
+/* harmony import */ var _model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(13);
+/* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14);
 
 
 
@@ -919,7 +810,135 @@ function populateConfirmationPageData(destinations, request) {
 
 
 /***/ }),
-/* 16 */
+/* 13 */
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   calcTimeDifference: () => (/* binding */ calcTimeDifference),
+/* harmony export */   calcTotalCostOfTrip: () => (/* binding */ calcTotalCostOfTrip),
+/* harmony export */   calcTotalSpentByYear: () => (/* binding */ calcTotalSpentByYear),
+/* harmony export */   filterTrips: () => (/* binding */ filterTrips),
+/* harmony export */   findDestinationByID: () => (/* binding */ findDestinationByID),
+/* harmony export */   findIDByDestination: () => (/* binding */ findIDByDestination),
+/* harmony export */   getAllAPIData: () => (/* binding */ getAllAPIData),
+/* harmony export */   getDestinationNames: () => (/* binding */ getDestinationNames),
+/* harmony export */   validateLoginCredentials: () => (/* binding */ validateLoginCredentials)
+/* harmony export */ });
+/* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(11);
+
+
+/* -------------- Utility -------------- */
+
+function filterTrips(tripData, criteria, travelerID, year = '2023') {
+  const date = new Date();
+  const yyyy = date.toLocaleString('default', { year: 'numeric' });
+  const mm = date.toLocaleString('default', { month: '2-digit' });
+  const dd = date.toLocaleString('default', { day: '2-digit' });
+  const currentDate = `${yyyy}/${mm}/${dd}`;
+
+  tripData = tripData.filter(trip => trip.userID === travelerID);
+
+  switch (criteria) {
+    case 'byYear':
+      return tripData.filter(trip => trip.date.slice(0, 4) === year);
+    case 'past':
+      return tripData.filter(
+        trip => trip.date < currentDate && trip.status !== 'pending',
+      );
+    case 'upcoming':
+      return tripData.filter(
+        trip => trip.date > currentDate && trip.status === 'approved',
+      );
+    case 'pending':
+      return tripData.filter(trip => trip.status === 'pending');
+    default:
+      return tripData;
+  }
+}
+
+function findDestinationByID(destinations, destID) {
+  return destinations.find(dest => dest.id === destID);
+}
+
+function findIDByDestination(destinations, destName) {
+  const destinationNames = getDestinationNames(destinations);
+  if (!destinationNames.includes(destName)) {
+    return false;
+  }
+
+  return destinations.find(dest => dest.destination === destName).id;
+}
+
+function getDestinationNames(destinations) {
+  return destinations.map(({ destination }) => destination);
+}
+
+/* -------------- Generic Fetch Call -------------- */
+
+function getAllAPIData() {
+  return Promise.all([
+    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/trips'),
+    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('http://localhost:3001/api/v1/destinations'),
+  ]).then(values => values);
+}
+
+/* -------------- Calculation -------------- */
+
+function calcTotalSpentByYear(userID, trips, destinations, year) {
+  return filterTrips(trips, 'byYear', userID, year).reduce((acc, trip) => {
+    const destination = findDestinationByID(destinations, trip.destinationID);
+    const total = calcTotalCostOfTrip(trip, destination);
+
+    acc += total.total;
+
+    return acc;
+  }, 0);
+}
+
+function calcTotalCostOfTrip(trip, destination) {
+  const flightCost =
+    trip.travelers * (destination.estimatedFlightCostPerPerson * 2);
+
+  const lodgingCost =
+    trip.duration * destination.estimatedLodgingCostPerDay * trip.travelers;
+  const subTotal = flightCost + lodgingCost;
+  const agentFee = subTotal * 0.1;
+  const total = subTotal + agentFee;
+
+  return {
+    flightCost,
+    lodgingCost,
+    subTotal,
+    agentFee,
+    total,
+  };
+}
+
+function calcTimeDifference(date1, date2) {
+  // Dates are passed in in the format yyyy-mm-dd
+  const splitDate1 = date1.split('-');
+  const splitDate2 = date2.split('-');
+  // Date object needs date format to be mm/dd/yyyy
+  date1 = new Date(`${splitDate1[1]}/${splitDate1[2]}/${splitDate1[0]}`);
+  date2 = new Date(`${splitDate2[1]}/${splitDate2[2]}/${splitDate2[0]}`);
+
+  const diffInMs = Math.abs(date1 - date2);
+
+  return diffInMs / (1000 * 60 * 60 * 24);
+}
+
+/* -------------- Login -------------- */
+
+function validateLoginCredentials(username, password) {
+  const regex = '^traveler(?:[1-9]|[1-4][0-9]|50)$';
+  return username.match(regex) && password === 'travel';
+}
+
+
+/***/ }),
+/* 14 */
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -968,32 +987,6 @@ function TripCard(trip, destination, criteria) {
   return card;
 }
 
-
-/***/ }),
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */,
-/* 21 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("images/jet-wing.jpg");
-
-/***/ }),
-/* 22 */
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("images/private-jet.jpg");
 
 /***/ })
 /******/ 	]);
@@ -1079,10 +1072,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   userStore: () => (/* binding */ userStore)
 /* harmony export */ });
 /* harmony import */ var _stylesheets_index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _header_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9);
+/* harmony import */ var _header_header__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
 /* harmony import */ var _header_header__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_header_header__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
-/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(15);
+/* harmony import */ var _apiCalls__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
+/* harmony import */ var _domManipulation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
 
 
 
