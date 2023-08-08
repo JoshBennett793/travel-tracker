@@ -840,9 +840,8 @@ function filterTrips(tripData, criteria, travelerID, year = '2023') {
 
   tripData = tripData
     .filter(trip => trip.userID === travelerID)
-    .sort((a, b) => new Date(b.date) - new Date(a.date)); // test that and also now tests are probably broken
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  console.log(tripData);
   switch (criteria) {
     case 'byYear':
       return tripData.filter(trip => trip.date.slice(0, 4) === year);

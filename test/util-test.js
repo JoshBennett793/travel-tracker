@@ -20,16 +20,6 @@ describe('Filter trips data', () => {
   it('Should return all trips by user id and year', () => {
     expect(tripsByYear).to.deep.equal([
       {
-        id: 2,
-        userID: 1,
-        destinationID: 2,
-        travelers: 4,
-        date: '2023/08/30',
-        duration: 3,
-        status: 'approved',
-        suggestedActivities: [],
-      },
-      {
         id: 4,
         userID: 1,
         destinationID: 2,
@@ -37,6 +27,16 @@ describe('Filter trips data', () => {
         date: '2023/11/11',
         duration: 10,
         status: 'pending',
+        suggestedActivities: [],
+      },
+      {
+        id: 2,
+        userID: 1,
+        destinationID: 2,
+        travelers: 4,
+        date: '2023/08/30',
+        duration: 3,
+        status: 'approved',
         suggestedActivities: [],
       },
     ]);
