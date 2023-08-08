@@ -5,6 +5,19 @@ import {
 } from './model';
 import { TripCard } from './trips/trips-card';
 
+/* -------------- Header -------------- */
+
+export function displayUserName(username) {
+  const userNameEl = document.querySelector('.user-name');
+  userNameEl.innerText = username;
+}
+
+/* -------------- Request Form Inputs -------------- */
+
+const requestFormDestinationInput = document.querySelector('#destination');
+const dropdownOpts = document.querySelector('.dropdown-options');
+const dateInputs = document.querySelectorAll('input[type="date"]');
+
 export function displayFilteredTrips(tripData, criteria) {
   const resultsEl = document.querySelector('.results-container');
   resultsEl.innerHTML = '';
@@ -36,12 +49,6 @@ export function displayTotalSpent(total) {
   totalSpentEl.innerText = total.toLocaleString('en-US');
   totalSpentContainer.setAttribute('tabindex', 0);
 }
-
-/* -------------- Request Form Inputs -------------- */
-
-const requestFormDestinationInput = document.querySelector('#destination');
-const dropdownOpts = document.querySelector('.dropdown-options');
-const dateInputs = document.querySelectorAll('input[type="date"]');
 
 export function renderAllDestinationOptions(destinations) {
   dropdownOpts.innerHTML = '';

@@ -90,6 +90,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   displayFilteredTrips: () => (/* binding */ displayFilteredTrips),
 /* harmony export */   displaySelectedFilterOption: () => (/* binding */ displaySelectedFilterOption),
 /* harmony export */   displayTotalSpent: () => (/* binding */ displayTotalSpent),
+/* harmony export */   displayUserName: () => (/* binding */ displayUserName),
 /* harmony export */   handleFormKeyboardInput: () => (/* binding */ handleFormKeyboardInput),
 /* harmony export */   navigateToPending: () => (/* binding */ navigateToPending),
 /* harmony export */   populateConfirmationPageData: () => (/* binding */ populateConfirmationPageData),
@@ -101,6 +102,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _trips_trips_card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(16);
 
 
+
+/* -------------- Header -------------- */
+
+function displayUserName(username) {
+  const userNameEl = document.querySelector('.user-name');
+  userNameEl.innerText = username;
+}
+
+/* -------------- Request Form Inputs -------------- */
+
+const requestFormDestinationInput = document.querySelector('#destination');
+const dropdownOpts = document.querySelector('.dropdown-options');
+const dateInputs = document.querySelectorAll('input[type="date"]');
 
 function displayFilteredTrips(tripData, criteria) {
   const resultsEl = document.querySelector('.results-container');
@@ -133,12 +147,6 @@ function displayTotalSpent(total) {
   totalSpentEl.innerText = total.toLocaleString('en-US');
   totalSpentContainer.setAttribute('tabindex', 0);
 }
-
-/* -------------- Request Form Inputs -------------- */
-
-const requestFormDestinationInput = document.querySelector('#destination');
-const dropdownOpts = document.querySelector('.dropdown-options');
-const dateInputs = document.querySelectorAll('input[type="date"]');
 
 function renderAllDestinationOptions(destinations) {
   dropdownOpts.innerHTML = '';
