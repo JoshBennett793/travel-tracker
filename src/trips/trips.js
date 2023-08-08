@@ -43,7 +43,6 @@ export function setAndProcessData() {
 }
 
 function processData(criteria = 'pending') {
-  console.log(criteria);
   const userID = userStore.getKey('currentUser').id;
   let tripData = aggregateTripData(criteria, userID);
   displayFilteredTrips(
