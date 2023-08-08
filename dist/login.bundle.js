@@ -92,6 +92,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   displayTotalSpent: () => (/* binding */ displayTotalSpent),
 /* harmony export */   handleFormKeyboardInput: () => (/* binding */ handleFormKeyboardInput),
 /* harmony export */   navigateToPending: () => (/* binding */ navigateToPending),
+/* harmony export */   populateConfirmationPageData: () => (/* binding */ populateConfirmationPageData),
 /* harmony export */   renderAllDestinationOptions: () => (/* binding */ renderAllDestinationOptions),
 /* harmony export */   setMinDateOption: () => (/* binding */ setMinDateOption),
 /* harmony export */   toggleConfirmationPage: () => (/* binding */ toggleConfirmationPage)
@@ -220,6 +221,43 @@ function toggleConfirmationPage() {
   confPage.classList.toggle('collapsed');
 }
 
+function populateConfirmationPageData(destinations, request) {
+  const destination = (0,_model__WEBPACK_IMPORTED_MODULE_0__.findDestinationByID)(destinations, request.destID);
+  const figures = (0,_model__WEBPACK_IMPORTED_MODULE_0__.calcTotalCostOfTrip)(request, destination);
+
+  const tripTotal = document.querySelector('.trip-total');
+  tripTotal.innerText = figures.total.toLocaleString('en-US');
+
+  const destinationEl = document.querySelector('.destination-value');
+  destinationEl.innerText = destination.destination;
+
+  const flightCost = document.querySelector('.flight-cost');
+  flightCost.innerText =
+    destination.estimatedFlightCostPerPerson.toLocaleString('en-US');
+
+  const flightCostTotal = document.querySelector('.flight-cost-total');
+  flightCostTotal.innerText = figures.flightCost.toLocaleString('en-US');
+
+  const livingExpenseCost = document.querySelector('.living-expense-cost');
+  livingExpenseCost.innerText =
+    destination.estimatedLodgingCostPerDay.toLocaleString('en-US');
+
+  const pax = document.querySelector('.num-of-pax');
+  pax.innerText = request.travelers;
+
+  const livingExpenseTotal = document.querySelector('.living-expense-total');
+  livingExpenseTotal.innerText = figures.lodgingCost.toLocaleString('en-US');
+
+  const subTotal = document.querySelector('.subtotal');
+  subTotal.innerText = figures.subTotal.toLocaleString('en-US');
+
+  const agentFee = document.querySelector('.agent-fee-cost');
+  agentFee.innerText = figures.agentFee.toLocaleString('en-US');
+
+  const grandTotal = document.querySelector('.grand-total-cost');
+  grandTotal.innerText = figures.total.toLocaleString('en-US');
+}
+
 
 /***/ }),
 
@@ -302,7 +340,7 @@ function calcTotalSpentByYear(userID, trips, destinations, year) {
     const destination = findDestinationByID(destinations, trip.destinationID);
     const total = calcTotalCostOfTrip(trip, destination);
 
-    acc += total;
+    acc += total.total;
 
     return acc;
   }, 0);
@@ -316,8 +354,15 @@ function calcTotalCostOfTrip(trip, destination) {
     trip.duration * destination.estimatedLodgingCostPerDay * trip.travelers;
   const subTotal = flightCost + lodgingCost;
   const agentFee = subTotal * 0.1;
+  const total = subTotal + agentFee;
 
-  return subTotal + agentFee;
+  return {
+    flightCost,
+    lodgingCost,
+    subTotal,
+    agentFee,
+    total,
+  }; // this is going to break the test
 }
 
 function calcTimeDifference(date1, date2) {

@@ -742,7 +742,7 @@ function calcTotalSpentByYear(userID, trips, destinations, year) {
     const destination = findDestinationByID(destinations, trip.destinationID);
     const total = calcTotalCostOfTrip(trip, destination);
 
-    acc += total;
+    acc += total.total;
 
     return acc;
   }, 0);
@@ -756,8 +756,15 @@ function calcTotalCostOfTrip(trip, destination) {
     trip.duration * destination.estimatedLodgingCostPerDay * trip.travelers;
   const subTotal = flightCost + lodgingCost;
   const agentFee = subTotal * 0.1;
+  const total = subTotal + agentFee;
 
-  return subTotal + agentFee;
+  return {
+    flightCost,
+    lodgingCost,
+    subTotal,
+    agentFee,
+    total,
+  }; // this is going to break the test
 }
 
 function calcTimeDifference(date1, date2) {
@@ -871,6 +878,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   displayTotalSpent: () => (/* binding */ displayTotalSpent),
 /* harmony export */   handleFormKeyboardInput: () => (/* binding */ handleFormKeyboardInput),
 /* harmony export */   navigateToPending: () => (/* binding */ navigateToPending),
+/* harmony export */   populateConfirmationPageData: () => (/* binding */ populateConfirmationPageData),
 /* harmony export */   renderAllDestinationOptions: () => (/* binding */ renderAllDestinationOptions),
 /* harmony export */   setMinDateOption: () => (/* binding */ setMinDateOption),
 /* harmony export */   toggleConfirmationPage: () => (/* binding */ toggleConfirmationPage)
@@ -997,6 +1005,43 @@ function navigateToPending() {
 function toggleConfirmationPage() {
   const confPage = document.querySelector('.confirmation-page-container');
   confPage.classList.toggle('collapsed');
+}
+
+function populateConfirmationPageData(destinations, request) {
+  const destination = (0,_model__WEBPACK_IMPORTED_MODULE_0__.findDestinationByID)(destinations, request.destID);
+  const figures = (0,_model__WEBPACK_IMPORTED_MODULE_0__.calcTotalCostOfTrip)(request, destination);
+
+  const tripTotal = document.querySelector('.trip-total');
+  tripTotal.innerText = figures.total.toLocaleString('en-US');
+
+  const destinationEl = document.querySelector('.destination-value');
+  destinationEl.innerText = destination.destination;
+
+  const flightCost = document.querySelector('.flight-cost');
+  flightCost.innerText =
+    destination.estimatedFlightCostPerPerson.toLocaleString('en-US');
+
+  const flightCostTotal = document.querySelector('.flight-cost-total');
+  flightCostTotal.innerText = figures.flightCost.toLocaleString('en-US');
+
+  const livingExpenseCost = document.querySelector('.living-expense-cost');
+  livingExpenseCost.innerText =
+    destination.estimatedLodgingCostPerDay.toLocaleString('en-US');
+
+  const pax = document.querySelector('.num-of-pax');
+  pax.innerText = request.travelers;
+
+  const livingExpenseTotal = document.querySelector('.living-expense-total');
+  livingExpenseTotal.innerText = figures.lodgingCost.toLocaleString('en-US');
+
+  const subTotal = document.querySelector('.subtotal');
+  subTotal.innerText = figures.subTotal.toLocaleString('en-US');
+
+  const agentFee = document.querySelector('.agent-fee-cost');
+  agentFee.innerText = figures.agentFee.toLocaleString('en-US');
+
+  const grandTotal = document.querySelector('.grand-total-cost');
+  grandTotal.innerText = figures.total.toLocaleString('en-US');
 }
 
 
@@ -1176,56 +1221,67 @@ const requestForm = document.querySelector('#request-form');
 
 requestForm.onsubmit = e => {
   e.preventDefault();
+  console.log('Submitting form...');
   confirmRequestWithUser();
 };
 
 function confirmRequestWithUser() {
+  let trips;
   (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
 
   const confirmBtn = document.querySelector('.confirm-trip-request');
   const cancelBtn = document.querySelector('.cancel-trip-request');
-  
-  // Confirm Button Event Listener
-  confirmBtn.onclick = () => {
-    (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
-    (0,_model__WEBPACK_IMPORTED_MODULE_2__.getAllAPIData)().then(apiData => {
-      const [trips, destinations] = apiData;
+
+  (0,_model__WEBPACK_IMPORTED_MODULE_2__.getAllAPIData)()
+    .then(apiData => {
+      const [tripsData, destinations] = apiData;
       const requestData = (0,_form__WEBPACK_IMPORTED_MODULE_4__.packageFormDataForAPI)(
         requestForm,
         destinations.destinations,
       );
+      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.populateConfirmationPageData)(destinations.destinations, requestData);
+      return {tripsData, requestData};
+    })
+    .then(data => {
+      // Confirm Button Event Listener
+      confirmBtn.onclick = () => {
+        (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
+        console.log(data.tripsData);
+        console.log(data.requestData);
+        processTripRequest(data.requestData, data.tripsData);
+      };
 
-      (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.postFlightRequest)(
-        'http://localhost:3001/api/v1/trips',
-        trips.trips[trips.trips.length - 1].id,
-        _scripts__WEBPACK_IMPORTED_MODULE_3__.userStore.getKey('currentUserID'),
-        requestData.destID,
-        requestData.pax,
-        requestData.startDate,
-        requestData.duration,
-      )
-        .then(resp => {
-          console.log(resp);
-          if (resp.message) {
-            (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.navigateToPending)();
-          } else {
-            throw new Error(
-              'The destination you wish to travel to is not within our travel network. Please select from our dropdown list of destinations.',
-            );
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.displayError)(err);
-        });
+      // Cancel Button Event Listener
+      cancelBtn.onclick = () => {
+        (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
+      };
     });
-  };
+}
 
-  // Cancel Button Event Listener
-  cancelBtn.onclick = () => {
-    console.log('cancelling request...');
-    (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
-  }
+function processTripRequest(requestData, trips) {
+  console.log(trips);
+  (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.postFlightRequest)(
+    'http://localhost:3001/api/v1/trips',
+    trips.trips[trips.trips.length - 1].id,
+    _scripts__WEBPACK_IMPORTED_MODULE_3__.userStore.getKey('currentUserID'),
+    requestData.destID,
+    requestData.travelers,
+    requestData.startDate,
+    requestData.duration,
+  )
+    .then(resp => {
+      if (resp.message) {
+        (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.navigateToPending)();
+      } else {
+        throw new Error(
+          'The destination you wish to travel to is not within our travel network. Please select from our dropdown list of destinations.',
+        );
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.displayError)(err);
+    });
 }
 
 })();
