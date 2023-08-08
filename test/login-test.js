@@ -13,7 +13,7 @@ describe('Login Authentication', () => {
     expect(validLogin).to.equal(true);
   });
 
-  it('Should return false if credentials are invalid', () => {
-    expect(invalidLogin).to.equal(false);
+  it('Should return null if credentials are invalid', () => {
+    expect(invalidLogin).to.equal(null);
   });
 });

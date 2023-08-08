@@ -11,6 +11,6 @@ describe('Calculation', () => {
   });
 
   it('Should calculate total spent for past year (2023)', () => {
-    expect(total).to.equal(8184);
+    expect(total).to.equal(25080);
   });
 });

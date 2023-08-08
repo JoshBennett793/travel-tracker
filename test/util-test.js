@@ -28,6 +28,16 @@ describe('Filter trips data', () => {
         status: 'approved',
         suggestedActivities: [],
       },
+      {
+        id: 4,
+        userID: 1,
+        destinationID: 2,
+        travelers: 6,
+        date: '2023/11/11',
+        duration: 10,
+        status: 'pending',
+        suggestedActivities: [],
+      },
     ]);
   });
 
