@@ -1049,6 +1049,7 @@ function TripCard(trip, destination, criteria) {
   if (criteria !== 'past') {
     const status = document.createElement('p');
     status.innerText = `Status: ${trip.status}`;
+    status.setAttribute('tabindex', 0);
     dataContainer.appendChild(status);
   }
 
