@@ -1221,7 +1221,6 @@ const requestForm = document.querySelector('#request-form');
 
 requestForm.onsubmit = e => {
   e.preventDefault();
-  console.log('Submitting form...');
   confirmRequestWithUser();
 };
 
@@ -1240,14 +1239,12 @@ function confirmRequestWithUser() {
         destinations.destinations,
       );
       (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.populateConfirmationPageData)(destinations.destinations, requestData);
-      return {tripsData, requestData};
+      return { tripsData, requestData };
     })
     .then(data => {
       // Confirm Button Event Listener
       confirmBtn.onclick = () => {
         (0,_domManipulation__WEBPACK_IMPORTED_MODULE_1__.toggleConfirmationPage)();
-        console.log(data.tripsData);
-        console.log(data.requestData);
         processTripRequest(data.requestData, data.tripsData);
       };
 
@@ -1259,7 +1256,6 @@ function confirmRequestWithUser() {
 }
 
 function processTripRequest(requestData, trips) {
-  console.log(trips);
   (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.postFlightRequest)(
     'http://localhost:3001/api/v1/trips',
     trips.trips[trips.trips.length - 1].id,

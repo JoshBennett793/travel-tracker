@@ -18,7 +18,6 @@ const requestForm = document.querySelector('#request-form');
 
 requestForm.onsubmit = e => {
   e.preventDefault();
-  console.log('Submitting form...');
   confirmRequestWithUser();
 };
 
@@ -37,14 +36,12 @@ function confirmRequestWithUser() {
         destinations.destinations,
       );
       populateConfirmationPageData(destinations.destinations, requestData);
-      return {tripsData, requestData};
+      return { tripsData, requestData };
     })
     .then(data => {
       // Confirm Button Event Listener
       confirmBtn.onclick = () => {
         toggleConfirmationPage();
-        console.log(data.tripsData);
-        console.log(data.requestData);
         processTripRequest(data.requestData, data.tripsData);
       };
 
@@ -56,7 +53,6 @@ function confirmRequestWithUser() {
 }
 
 function processTripRequest(requestData, trips) {
-  console.log(trips);
   postFlightRequest(
     'http://localhost:3001/api/v1/trips',
     trips.trips[trips.trips.length - 1].id,
