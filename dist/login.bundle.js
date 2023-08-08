@@ -304,8 +304,11 @@ function filterTrips(tripData, criteria, travelerID, year = '2023') {
   const dd = date.toLocaleString('default', { day: '2-digit' });
   const currentDate = `${yyyy}/${mm}/${dd}`;
 
-  tripData = tripData.filter(trip => trip.userID === travelerID);
+  tripData = tripData
+    .filter(trip => trip.userID === travelerID)
+    .sort((a, b) => new Date(b.date) - new Date(a.date)); // test that and also now tests are probably broken
 
+  console.log(tripData);
   switch (criteria) {
     case 'byYear':
       return tripData.filter(trip => trip.date.slice(0, 4) === year);
