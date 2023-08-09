@@ -1,109 +1,113 @@
-# Webpack Starter Kit
+<div align="center">
 
-## Clone This Repo
+# VantageJets Travel Tracker
+**Created by [Josh Bennett](https://www.linkedin.com/in/joshua-bennett793)**
+  
+[![LinkedIn Badge](https://img.shields.io/badge/-@JoshBennett793-blue?style=flat&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/joshua-bennett793/)
+![Email Badge](https://img.shields.io/badge/-joshbennett793@yahoo.com-red?style=flat&logo=yahoo&logoColor=white)
+  
+### [LIVE DEMO](https://joshbennett793.github.io/travel-tracker/)
+  
+</div>
 
-That's right, _clone_ not fork. You will use this repo multiple times, but you can only fork a repository once. So here is what you need to do to clone the repo and still be able to push changes to your repo:
+## 📝 Description
 
-1. Clone down this repo. Since you don't want to name your project "webpack-starter-kit", you can use an optional argument when you run `git clone` (you replace the `[...]` with the terminal command arguments): `git clone [remote-address] [what you want to name the repo]`
-1. Remove the default remote: `git remote rm origin` (notice that `git remote -v` not gives you back nothing)
-1. Create a new repo on GitHub with the name of `[what you want to name the repo]` to be consistent with naming
-1. Copy the address that you would use to clone down this repo - something like `git@github.com:...`
-1. Add this remote to your cloned down repo: `git remote add origin [address you copied in the previous step]` - do not include the brackets
+Welcome to VantageJets, a mock travel agency's Trip Request Client Dashboard tailored to offer you an exquisite journey through the skies. Easily log in and submit trip requests for your dream destinations. Choose from a curated list of exquisite locales, specify your preferred start and end dates, and the number of passengers to accompany you on your journey. With just a few clicks, confirm your trip request and embark on the ultimate adventure. Our streamlined process ensures that your experience remains as polished as our private jets. Stay in control of your travel schedule with a meticulously designed dashboard. Access a snapshot of your pending trip requests, upcoming and approved trips, as well as a history of past journeys.
 
-Now try to commit something (just add a line in the README) and push it up to your new repo. If everything is setup correctly, you should see the changes on GitHub.
+## 🧑‍💻 How To View This Code In Action
 
-## Setup
-
-After one person has gone through the steps of cloning down this repo and editing the remote, everyone should clone down the repo.
-
-Then install the library dependencies. Run:
+Open up two separate terminal tabs/windows
 
 ```bash
+# Clone these repos to your local machine by running:
+git clone git@github.com:JoshBennett793/travel-tracker.git (Front End)
+git clone git@github.com:JoshBennett793/travel-tracker-api.git (Back End/Server)
+
+# cd into the root directory on either terminal instance
+cd travel-tracker
+cd travel-tracker-api
+
+# Install Dependencies on both repos
 npm install
-```
 
-To verify that it is setup correctly, run `npm start` in your terminal. Go to `http://localhost:8080/` and you should see a page with the Turing logo image and a beautiful gradient background. If that's the case, you're good to go. Enter `control + c` in your terminal to stop the server at any time.
-
-## Where to Add Your Code
-
-### JavaScript
-
-You have to be very intentional with where you add your feature code. This repo uses a tool called [webpack](https://webpack.js.org/) to combine many JavaScript files into one big file. Webpack enables you to have many, separate JavaScript files to keep your code organized and readable. Webpack expects all of your code files to be in a specific place, or else it doesn't know how to combine them all behind the scenes.
-
-**Create all of your feature code files in the `src` directory.**
-
-Since code is separated into multiple files, you need to use the `import` and `export` syntax to share code across file.
-
-Here is a video that walks through some information about [import and export](https://www.youtube.com/watch?v=_3oSWwapPKQ). There are a lot of resources out there about `import` and `export`, and resources will sometimes call them `ES6 modules`. It's something you will see in React and beyond.
-
-### HTML
-
-Add the HTML you need in the `index.html` file in the `./dist` directory. There is some boilerplate HTML that exists from the start that you can modify.
-
-### Images
-
-Add your image files in the `src/images` directory. Similar to CSS files, you need to `import` image files in the JavaScript entry file (`scripts.js`). Then go into the HTML and add an `img` element with the `src` attribute pointing to the `images` directory. There is an example in the `index.html` file for you to see.
-
-## How to View Your Code in Action
-
-In the terminal, run:
-
-```bash
+# Run the start script for both repos
 npm start
-```
 
-You will see a bunch of lines output to your terminal. One of those lines will be something like:
-
-```bash
+# You will see a bunch of lines output to your terminal. One of those lines will be something like:
 Project is running at http://localhost:8080/
+
+# Go to `http://localhost:8080/` in your browser to view the code running in the browser.
 ```
 
-Go to `http://localhost:8080/` in your browser to view your code running in the browser.
-
----
-
-## Test Files Organization
-
-Similar to feature code, your test code needs to be put in a specific place for it to run successfully.
-
-**Put all of your test files in the `test` directory.** As a convention, all test filenames should end with `-test.js`. For instance: `box-test.js`.
-
-## Running Your Tests
-
-Run your test suite using the command:
-
-```bash
-npm test
+### Login Credentials
 ```
-
-The test results will output to the terminal.
-
+Username: traveler(1-50)
+Password: travel
+```
 ---
 
-## Linting Your Code
 
-Run the command in your terminal `npm run lint` to run the linter on your JavaScript code. There will be errors and warnings right from the start in this starter kit - the linter is still running successfully.
+## 📚 Learning Goals
 
-Your linter will look at the JavaScript files you have within the `src` directory and the `test` directory.
+- Write code with W3C accessibility guidelines in mind
+- Keep the UI in sync with the data model
+- Successfully and gracefully handle GET and POST network requests
+- Implement client-side routing and maintain state throughout the app
+- Incorporate a new framework or library (Sass)
 
-## Webpack?
+## 📸 Screenshots
+<details open>
+  <summary> ⚙️ Functionality </summary>
+  
+  | Description | Screenshot |
+  |------------ | -----------|
+  | <h3 align="center">Login | ![vantage-login](https://github.com/JoshBennett793/travel-tracker/assets/100454651/cc376265-e032-41f9-807f-1bb2d603a819)
+  | <h3 align="center">Home/Trip Request | ![vantage-trip-request](https://github.com/JoshBennett793/travel-tracker/assets/100454651/2f4ef478-9bc2-45de-9539-41307fa72366)
+  | <h3 align="center">Trip Summary | ![vantage-trip-summary](https://github.com/JoshBennett793/travel-tracker/assets/100454651/aa3b4fdc-0003-4a5b-b4bc-f01b2026486a)
+  | <h3 align="center">Pending Trips | ![vantage-pending](https://github.com/JoshBennett793/travel-tracker/assets/100454651/aaabd29c-81e4-4379-8fac-c1f032b02cff)
 
-If you look in the `package.json` file, you'll see one of the library dependencies called `webpack`. If you're interested in learning more about what Webpack is and how it works behind the scenes, take a look through the [Webpack configuration documentation](https://webpack.js.org/concepts/).
+</details>
 
-## Deploying to GitHub Pages
+## 💻 Technologies Used
+  
+![JavaScript](https://img.shields.io/badge/-JavaScript-05122A?style=flat&logo=javascript) 
+![HTML5](https://img.shields.io/badge/-HTML5-05122A?style=flat&logo=html5)
+![CSS3](https://img.shields.io/badge/-Sass-05122A?style=flat&logo=sass)
+![Git](https://img.shields.io/badge/-Git-05122A?style=flat&logo=git)
+![Github](https://img.shields.io/badge/-GitHub-05122A?style=flat&logo=github)
+![VSCode](https://img.shields.io/badge/-VS_Code-05122A?style=flat&logo=visualstudio)
+![Webpack](https://img.shields.io/badge/-Webpack-05122A?style=flat&logo=webpack)
+![Mocha](https://img.shields.io/badge/-Mocha-05122A?style=flat&logo=mocha)
+![Chai](https://img.shields.io/badge/-Chai-05122A?style=flat&logo=chai)
+  
+## 🧘‍♂️ Reflections
+<details open>
+  <summary> </> Code Architecture </summary>
 
-_If you are finished with the functionality and testing of your project_, then you can consider deploying your project to the web! This way anyone can play it without cloning down your repo.
+  - Modularized MVC design pattern
+  - Module/Partial Sass architecture
 
-[GitHub Pages](https://pages.github.com/) is a great way to deploy your project to the web. Don't worry about this until your project is free of bugs and well tested!
+</details>
+<details open>
+  <summary> 🎉 Wins </summary>
 
-If you _are_ done, you can follow [this procedure](./gh-pages-procedure.md) to get your project live on GitHub Pages.
+  1. Successfully implementing the client-side routing while handling the script and stylesheet loading conflicts
+  2. Incorporating a new css library
+  3. Creating an visually attractive and accessible UI
 
-IMG Attributions:
-`
-<a target="_blank" href="https://icons8.com/icon/63262/checkmark">Checkmark</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+</details>
+<details open>
+  <summary> 🤔 Challenges </summary>
+  
+  1. Handling the scripts and stylesheet loading conflicts
+  2. Balancing Sass with webpack
+  3. Writing logical and readable client-side routing code
+  4. Writing code that flows logically and smoothly throughout various modules
+
+### Image Attributions:
 
 Photo by <a href="https://unsplash.com/@kirillz?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Kirill</a> on <a href="https://unsplash.com/photos/AoJAZq8y6ts?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
 
 Photo by <a href="https://unsplash.com/@ramonkagie?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Ramon Kagie</a> on <a href="https://unsplash.com/photos/_Xmn7jaKh1Y?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-  
-`
+
+Photo by <a href="https://unsplash.com/@niklasjonasson?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Niklas Jonasson</a> on <a href="https://unsplash.com/photos/kEUqqARSlrw?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
