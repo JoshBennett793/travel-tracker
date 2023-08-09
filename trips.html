@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trips | VantageJet</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="logo-container" aria-label="Company logo">
+        <p class="logo-text"><span class="logo-brand-color">Vantage</span>Jets</p>
+      </div>
+      <div class="header-nav-container">
+        <nav class="header-site-nav">
+          <ul>
+            <li class="site-nav-list-item">
+              <button id="home">Home</button>
+            </li>
+            <li class="site-nav-list-item">
+              <button id="trips" style="color: #fab02b;">Trips</button>
+            </li>
+            <!-- <li class="site-nav-list-item">
+              <button id="destinations">Destinations</button>
+            </li> -->
+          </ul>
+        </nav>
+      </div>
+      <p class="user-greeting">Welcome, <span class="user-name"></span></p>
+    </header>
+    <div class="trips-page-bg-img-container"></div>
+    <main class="trips-main">
+      <section class="upper-main">
+        <div class="filter-btn-container">
+          <button class="filter-btn" id="pending">Pending</button>
+          <button class="filter-btn" id="past">Past</button>
+          <button class="filter-btn" id="upcoming">Upcoming</button>
+        </div>
+        <p class="total-spent">
+          Total Spent: $<span class="total-spent-value"></span>
+        </p>
+      </section>
+      <section class="lower-main results-container"></section>
+    </main>
+  </body>
+
+  <script src="index.bundle.js"></script>
+  <script src="trips.bundle.js"></script>
+</html>

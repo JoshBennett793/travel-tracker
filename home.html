@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | VantageJets</title>
+  </head>
+  <body>
+    <div class="home-page-bg-img-container"></div>
+    <header>
+      <div class="logo-container" aria-label="Company logo">
+      <p class="logo-text"><span class="logo-brand-color">Vantage</span>Jets</p>
+      </div>
+      <div class="header-nav-container">
+        <nav class="header-site-nav">
+          <ul>
+            <li class="site-nav-list-item">
+              <button id="home" style="color: #fab02b">Home</button>
+            </li>
+            <li class="site-nav-list-item">
+              <button id="trips">Trips</button>
+            </li>
+            <!-- <li class="site-nav-list-item">
+              <button id="destinations">Destinations</button>
+            </li> -->
+          </ul>
+        </nav>
+      </div>
+      <p class="user-greeting">Welcome, <span class="user-name">Josh</span></p>
+    </header>
+
+    <div class="request-form-container">
+      <form action="#" id="request-form">
+        <div class="form-inputs">
+          <div class="dropdown-container">
+            <div class="form-element">
+              <label for="destination">Destination:</label>
+              <input
+                type="text"
+                name="destination"
+                id="destination"
+                placeholder="Destination"
+                aria-label="Press enter to expand dropdown menu"
+                required
+              />
+            </div>
+            <div class="dropdown-options"></div>
+          </div>
+          <div class="form-element">
+            <label for="start-date">Start Date:</label>
+            <input type="date" name="start-date" id="start-date" required />
+          </div>
+          <div class="form-element">
+            <label for="end-date">End Date:</label>
+            <input type="date" name="end-date" id="end-date" required />
+          </div>
+          <div class="form-element">
+            <label for="pax" aria-label="number of travelers">Pax:</label>
+            <input
+              type="number"
+              name="travelers"
+              id="pax"
+              min="1"
+              max="20"
+              placeholder="#"
+              required
+            />
+          </div>
+        </div>
+        <p class="error-message"></p>
+        <div class="button-container"><button>Request Trip</button></div>
+      </form>
+    </div>
+
+    <div class="confirmation-page-container collapsed">
+      <div class="confirmation-page-top">
+        <h1>Trip Summary</h1>
+        <h2>Total: $<span class="trip-total"></span></h2>
+        <button class="confirm-trip-request">Confirm request</button>
+      </div>
+      <div class="confirmation-page-bottom">
+        <article class="confirmation-page-detail">
+          <h3 class="conf-destination">Destination:</h3>
+          <p class="destination-value"></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-flight-cost">Flight Cost ($<span class="flight-cost"></span>/person, round-trip):</h3>
+          <p>$<span class="flight-cost-total"></span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-living-expense">Living Expenses ($<span class="living-expense-cost"></span>/day):</h3>
+          <p><span class="num-of-pax"></span> traveler(s) $<span class="living-expense-total"></span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-subtotal">Subtotal:</h3>
+          <p>$<span class="subtotal"></span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-agent-fee">Agent Fee (10%):</h3>
+          <p>$<span class="agent-fee-cost"></span></p>
+        </article>
+        <hr>
+        <article class="confirmation-page-detail">
+          <h3 class="conf-grand-total">Total:</h3>
+          <p>$<span class="grand-total-cost"></span></p>
+        </article>
+        <button class="cancel-trip-request">Cancel</button>
+      </div>
+    </div>
+
+    <script src="index.bundle.js"></script>
+    <script src="home.bundle.js"></script>
+  </body>
+</html>
