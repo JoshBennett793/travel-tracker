@@ -50,14 +50,13 @@ function initUserStore() {
 
 function setAndProcessUserData() {
   const currentUserID = localStorage.getItem('currentUserID');
-  (0,_apiCalls__WEBPACK_IMPORTED_MODULE_2__.getAPIData)(`http://localhost:3001/api/v1/travelers/${currentUserID}`)
-    .then(user => {
-      userStore.setKey('currentUser', user);
-      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayUserName)(user.name.split(' ')[0]);
-      userStore.setKey('currentUserID', parseInt(currentUserID));
-
-    },
-  );
+  (0,_apiCalls__WEBPACK_IMPORTED_MODULE_2__.getAPIData)(
+    `http://travel-tracker-api-two.vercel.app/api/v1/travelers/${currentUserID}`,
+  ).then(user => {
+    userStore.setKey('currentUser', user);
+    (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayUserName)(user.name.split(' ')[0]);
+    userStore.setKey('currentUserID', parseInt(currentUserID));
+  });
 }
 
 const userStore = initUserStore();
@@ -1082,7 +1081,7 @@ const endDateInput = document.querySelector('#end-date');
 // Event Listeners
 
 window.onload = () => {
-  fetch('http://localhost:3001/api/v1/destinations')
+  fetch('http://travel-tracker-api-two.vercel.app/api/v1/destinations')
     .then(resp => {
       if (resp.ok) {
         return resp.json();
@@ -1271,7 +1270,7 @@ function confirmRequestWithUser() {
 
 function processTripRequest(requestData, trips) {
   (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.postFlightRequest)(
-    'http://localhost:3001/api/v1/trips',
+    'http://travel-tracker-api-two.vercel.app/api/v1/trips',
     trips.trips[trips.trips.length - 1].id,
     _scripts__WEBPACK_IMPORTED_MODULE_3__.userStore.getKey('currentUserID'),
     requestData.destID,
