@@ -15,7 +15,7 @@ const endDateInput = document.querySelector('#end-date');
 // Event Listeners
 
 window.onload = () => {
-  fetch('http://localhost:3001/api/v1/destinations')
+  fetch('http://travel-tracker-api-two.vercel.app/api/v1/destinations')
     .then(resp => {
       if (resp.ok) {
         return resp.json();

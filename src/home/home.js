@@ -51,7 +51,7 @@ function confirmRequestWithUser() {
 
 function processTripRequest(requestData, trips) {
   postFlightRequest(
-    'http://localhost:3001/api/v1/trips',
+    'http://travel-tracker-api-two.vercel.app/api/v1/trips',
     trips.trips[trips.trips.length - 1].id,
     userStore.getKey('currentUserID'),
     requestData.destID,
