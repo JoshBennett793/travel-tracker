@@ -50,14 +50,13 @@ function initUserStore() {
 
 function setAndProcessUserData() {
   const currentUserID = localStorage.getItem('currentUserID');
-  (0,_apiCalls__WEBPACK_IMPORTED_MODULE_2__.getAPIData)(`http://localhost:3001/api/v1/travelers/${currentUserID}`)
-    .then(user => {
-      userStore.setKey('currentUser', user);
-      (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayUserName)(user.name.split(' ')[0]);
-      userStore.setKey('currentUserID', parseInt(currentUserID));
-
-    },
-  );
+  (0,_apiCalls__WEBPACK_IMPORTED_MODULE_2__.getAPIData)(
+    `http://travel-tracker-api-two.vercel.app/api/v1/travelers/${currentUserID}`,
+  ).then(user => {
+    userStore.setKey('currentUser', user);
+    (0,_domManipulation__WEBPACK_IMPORTED_MODULE_3__.displayUserName)(user.name.split(' ')[0]);
+    userStore.setKey('currentUserID', parseInt(currentUserID));
+  });
 }
 
 const userStore = initUserStore();
