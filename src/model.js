@@ -54,8 +54,8 @@ export function getDestinationNames(destinations) {
 
 export function getAllAPIData() {
   return Promise.all([
-    getAPIData('https://localhost:3001/api/v1/trips'),
-    getAPIData('https://localhost:3001/api/v1/destinations'),
+    getAPIData('https://travel-tracker-api-two.vercel.app/api/v1/trips'),
+    getAPIData('https://travel-tracker-api-two.vercel.app/api/v1/destinations'),
   ]).then(values => values);
 }
 
