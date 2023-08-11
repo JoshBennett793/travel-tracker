@@ -54,8 +54,8 @@ export function getDestinationNames(destinations) {
 
 export function getAllAPIData() {
   return Promise.all([
-    getAPIData('http://localhost:3001/api/v1/trips'),
-    getAPIData('http://localhost:3001/api/v1/destinations'),
+    getAPIData('https://localhost:3001/api/v1/trips'),
+    getAPIData('https://localhost:3001/api/v1/destinations'),
   ]).then(values => values);
 }
 

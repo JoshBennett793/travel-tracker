@@ -35,7 +35,7 @@ function initUserStore() {
 export function setAndProcessUserData() {
   const currentUserID = localStorage.getItem('currentUserID');
   getAPIData(
-    `http://travel-tracker-api-two.vercel.app/api/v1/travelers/${currentUserID}`,
+    `https://travel-tracker-api-two.vercel.app/api/v1/travelers/${currentUserID}`,
   ).then(user => {
     userStore.setKey('currentUser', user);
     displayUserName(user.name.split(' ')[0]);
