@@ -349,8 +349,8 @@ function getDestinationNames(destinations) {
 
 function getAllAPIData() {
   return Promise.all([
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('https://localhost:3001/api/v1/trips'),
-    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('https://localhost:3001/api/v1/destinations'),
+    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('https://travel-tracker-api-two.vercel.app/api/v1/trips'),
+    (0,_apiCalls__WEBPACK_IMPORTED_MODULE_0__.getAPIData)('https://travel-tracker-api-two.vercel.app/api/v1/destinations'),
   ]).then(values => values);
 }
 
